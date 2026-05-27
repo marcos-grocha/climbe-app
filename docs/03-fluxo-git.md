@@ -70,23 +70,16 @@ correção do bug         # qual bug?
 
 ### Template
 
-```markdown
-## O que muda
+Já está pré-configurado. Quando você abrir uma PR no GitHub, o corpo vem preenchido com as seções:
 
-Descrição curta do que esta PR faz.
-Se for algo visual, coloque o print dele pronto!
+- **O que muda** — descrição em 1-3 linhas
+- **Tipo** — feat / fix / refactor / style / docs / chore / test
+- **Como testar** — passo a passo pro revisor
+- **Screenshots** — se mudou UI (lembrete: se for algo visual, anexe o print)
+- **Checklist do autor** — lint, format, testes manuais, padrões
+- **Issue relacionada** — `Closes #N` da issue/task no GitHub Projects (fecha automaticamente ao mergear)
 
-## Como testar
-
-1. Passo a passo
-2. Para validar manualmente
-
-## Checklist
-
-- [ ] Lint passa
-- [ ] Testado manualmente
-- [ ] Sem credenciais commitadas
-```
+Preencha o que se aplica e apague o resto.
 
 ### Code Review
 
