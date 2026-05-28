@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue'
 import ClimbeSidebar from './ClimbeSidebar.vue'
 import ClimbeHeader from './ClimbeHeader.vue'
 
-const props = defineProps({
+defineProps({
   title: {
     type: String,
     default: 'Painel Geral'
@@ -43,7 +43,7 @@ const handleNavigate = (tabId) => {
 </script>
 
 <template>
-  <div class="climbe-page-wrapper">
+  <div class="flex w-screen h-screen bg-[var(--climbe-neutral-bg)] overflow-hidden box-border">
     <!-- Menu Lateral Principal -->
     <ClimbeSidebar 
       :collapsed="sidebarCollapsed" 
@@ -53,7 +53,7 @@ const handleNavigate = (tabId) => {
     />
 
     <!-- Área de Conteúdo à Direita -->
-    <div class="climbe-content-container">
+    <div class="flex flex-col flex-1 h-full overflow-hidden relative">
       <!-- Cabeçalho Superior -->
       <ClimbeHeader 
         :title="title" 
@@ -61,8 +61,8 @@ const handleNavigate = (tabId) => {
       />
 
       <!-- Área Interna de Conteúdo da Página -->
-      <div class="climbe-page-content-scroll">
-        <div class="climbe-page-content-inner">
+      <div class="flex-1 overflow-y-auto bg-[var(--climbe-neutral-bg)] box-border">
+        <div class="max-w-[1280px] mx-auto py-6 px-8 box-border anim-content">
           <slot></slot>
         </div>
       </div>
@@ -71,37 +71,7 @@ const handleNavigate = (tabId) => {
 </template>
 
 <style scoped>
-.climbe-page-wrapper {
-  display: flex;
-  width: 100vw;
-  height: 100vh;
-  background-color: var(--climbe-neutral-bg);
-  overflow: hidden;
-  box-sizing: border-box;
-}
-
-.climbe-content-container {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  height: 100%;
-  overflow: hidden;
-  position: relative;
-}
-
-/* Área rolável para evitar barra de rolagem geral na janela */
-.climbe-page-content-scroll {
-  flex: 1;
-  overflow-y: auto;
-  background-color: var(--climbe-neutral-bg);
-  box-sizing: border-box;
-}
-
-.climbe-page-content-inner {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: var(--space-6) var(--space-8);
-  box-sizing: border-box;
+.anim-content {
   animation: contentFadeIn 0.3s ease-out;
 }
 

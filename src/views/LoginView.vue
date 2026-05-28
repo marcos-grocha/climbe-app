@@ -138,19 +138,20 @@ const handleLogin = () => {
         <form v-else @submit.prevent="handleLogin" class="form" novalidate>
           
           <!-- Campo E-mail -->
-          <div class="input-group" :class="{ 'has-error': errors.email, 'has-value': form.email }">
-            <div class="input-container">
+          <div class="flex flex-col gap-1.5 relative" :class="{ 'has-error': errors.email, 'has-value': form.email }">
+            <div class="relative flex items-center">
               <input 
                 id="email" 
                 v-model="form.email" 
                 type="email" 
                 required 
                 autocomplete="username"
+                class="peer w-full py-[1.1rem] pl-[2.8rem] pr-4 rounded-[0.8rem] border border-[var(--color-border)] bg-[var(--color-background-soft)] text-[var(--color-text)] text-[0.95rem] outline-none transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] box-border focus:pt-[1.5rem] focus:pb-[0.7rem] focus:border-[var(--climb-cyan)] focus:shadow-[0_0_0_4px_var(--climb-cyan-light)] [.has-value_&]:pt-[1.5rem] [.has-value_&]:pb-[0.7rem] [.has-value_&]:border-[var(--climb-cyan)] [.has-value_&]:shadow-[0_0_0_4px_var(--climb-cyan-light)] [.has-error_&]:!border-[#e25c5c] focus:[.has-error_&]:!shadow-[0_0_0_4px_rgba(226,92,92,0.15)]"
                 @blur="validateEmail"
                 @input="errors.email = ''"
               />
-              <label for="email">E-mail corporativo ou cadastrado</label>
-              <span class="input-icon">
+              <label for="email" class="absolute left-[2.8rem] top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] text-[0.95rem] pointer-events-none transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] peer-focus:top-[30%] peer-focus:-translate-y-[80%] peer-focus:text-[0.75rem] peer-focus:text-[var(--climb-cyan)] peer-focus:font-semibold [.has-value_&]:top-[30%] [.has-value_&]:-translate-y-[80%] [.has-value_&]:text-[0.75rem] [.has-value_&]:text-[var(--climb-cyan)] [.has-value_&]:font-semibold [.has-error_&]:!text-[#e25c5c]">E-mail corporativo ou cadastrado</label>
+              <span class="absolute left-4 text-[var(--color-text-muted)] flex items-center pointer-events-none transition-colors duration-300 peer-focus:text-[var(--climb-cyan)] [.has-value_&]:text-[var(--climb-cyan)] [.has-error_&]:!text-[#e25c5c]">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
               </span>
             </div>
@@ -161,25 +162,26 @@ const handleLogin = () => {
           </div>
 
           <!-- Campo Senha -->
-          <div class="input-group" :class="{ 'has-error': errors.password, 'has-value': form.password }">
-            <div class="input-container">
+          <div class="flex flex-col gap-1.5 relative" :class="{ 'has-error': errors.password, 'has-value': form.password }">
+            <div class="relative flex items-center">
               <input 
                 id="password" 
                 v-model="form.password" 
                 :type="showPassword ? 'text' : 'password'" 
                 required 
                 autocomplete="current-password"
+                class="peer w-full py-[1.1rem] pl-[2.8rem] pr-10 rounded-[0.8rem] border border-[var(--color-border)] bg-[var(--color-background-soft)] text-[var(--color-text)] text-[0.95rem] outline-none transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] box-border focus:pt-[1.5rem] focus:pb-[0.7rem] focus:border-[var(--climb-cyan)] focus:shadow-[0_0_0_4px_var(--climb-cyan-light)] [.has-value_&]:pt-[1.5rem] [.has-value_&]:pb-[0.7rem] [.has-value_&]:border-[var(--climb-cyan)] [.has-value_&]:shadow-[0_0_0_4px_var(--climb-cyan-light)] [.has-error_&]:!border-[#e25c5c] focus:[.has-error_&]:!shadow-[0_0_0_4px_rgba(226,92,92,0.15)]"
                 @blur="validatePassword"
                 @input="errors.password = ''"
               />
-              <label for="password">Senha de acesso</label>
-              <span class="input-icon">
+              <label for="password" class="absolute left-[2.8rem] top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] text-[0.95rem] pointer-events-none transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] peer-focus:top-[30%] peer-focus:-translate-y-[80%] peer-focus:text-[0.75rem] peer-focus:text-[var(--climb-cyan)] peer-focus:font-semibold [.has-value_&]:top-[30%] [.has-value_&]:-translate-y-[80%] [.has-value_&]:text-[0.75rem] [.has-value_&]:text-[var(--climb-cyan)] [.has-value_&]:font-semibold [.has-error_&]:!text-[#e25c5c]">Senha de acesso</label>
+              <span class="absolute left-4 text-[var(--color-text-muted)] flex items-center pointer-events-none transition-colors duration-300 peer-focus:text-[var(--climb-cyan)] [.has-value_&]:text-[var(--climb-cyan)] [.has-error_&]:!text-[#e25c5c]">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
               </span>
               <!-- Toggle Senha -->
               <button 
                 type="button" 
-                class="password-toggle" 
+                class="absolute right-4 bg-transparent border-none text-[var(--color-text-muted)] cursor-pointer flex items-center p-0 transition-colors duration-300 hover:text-[var(--climb-cyan)]" 
                 @click="showPassword = !showPassword"
                 tabindex="-1"
                 :aria-label="showPassword ? 'Esconder senha' : 'Exibir senha'"
@@ -195,13 +197,13 @@ const handleLogin = () => {
           </div>
 
           <!-- Lembrar / Esqueci Senha -->
-          <div class="form-options">
+          <div class="flex justify-between items-center text-[0.85rem] mt-1">
             <label class="checkbox-container">
               <input type="checkbox" v-model="form.rememberMe" />
               <span class="checkmark"></span>
               <span class="checkbox-text">Lembrar-me</span>
             </label>
-            <a href="#" class="forgot-password" @click.prevent>Esqueceu a senha?</a>
+            <a href="#"  @click.prevent>Esqueceu a senha?</a>
           </div>
 
           <!-- Botão Acessar Conta -->
@@ -215,9 +217,7 @@ const handleLogin = () => {
           </button>
 
           <!-- Divisor -->
-          <div class="divider">
-            <span>ou entre com parceiros</span>
-          </div>
+          <div class="divider"><span>ou entre com parceiros</span></div>
 
           <!-- Provedores Sociais -->
           <div class="social-login">
@@ -225,19 +225,15 @@ const handleLogin = () => {
               <svg viewBox="0 0 24 24" width="18" height="18" xmlns="http://www.w3.org/2000/svg"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 12-4.53z" fill="#EA4335"/></svg>
               Google
             </button>
-            <button type="button" class="social-btn" @click.prevent aria-label="Entrar com Apple">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 4.17c.66-.81 1.11-1.93.99-3.06-1 .04-2.21.67-2.93 1.49-.62.69-1.16 1.84-1.01 2.96 1.1.09 2.23-.57 2.95-1.39z"/></svg>
-              Apple
-            </button>
           </div>
         </form>
 
         <!-- Footer do formulário -->
         <div class="login-footer">
-          <p>Novo por aqui? <a href="#" @click.prevent>Abra sua conta Climb</a></p>
+          <p>Novo por aqui? <a href="#"  @click.prevent>Abra sua conta Climb</a></p>
         </div>
       </div>
-
+      <!-- Coluna Direita: Painel Corporativo e Grafismos Climb (Oculto em Mobile) -->
       <!-- Coluna Direita: Painel Corporativo e Grafismos Climb (Oculto em Mobile) -->
       <div class="login-visual-side">
         <!-- Overlay sofisticado para o gradiente de cores corporativas -->
@@ -365,12 +361,12 @@ const handleLogin = () => {
   }
 }
 
-/* Lado Esquerdo: Formulário */
+/* Lado Esquerdo: Formulário - Layout Restaurado */
 .login-form-side {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 2.5rem 1.5rem;
+  padding: 4rem 1.5rem;
   width: 100%;
   max-width: 460px;
   margin: 0 auto;
@@ -380,7 +376,7 @@ const handleLogin = () => {
 
 @media (min-width: 1024px) {
   .login-form-side {
-    padding: 4rem 3rem;
+    padding: 6rem 3rem;
     max-width: 520px;
     margin-right: 80px;
   }
@@ -408,115 +404,84 @@ const handleLogin = () => {
   line-height: 1.4;
 }
 
-/* Formulário e Inputs */
 .form {
   display: flex;
   flex-direction: column;
   gap: 1.4rem;
 }
 
-.input-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  position: relative;
-}
-
-.input-container {
-  position: relative;
+/* Divisor */
+.divider {
   display: flex;
   align-items: center;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  margin: 0.8rem 0;
 }
 
-.input-container input {
-  width: 100%;
-  padding: 1.1rem 1rem 1.1rem 2.8rem;
-  border-radius: 0.8rem;
-  border: 1px solid var(--color-border);
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.divider span {
+  padding: 0 0.8rem;
+  font-weight: 500;
+}
+
+/* Social Login */
+.social-login {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
   background: var(--color-background-soft);
+  border: 1px solid var(--color-border);
   color: var(--color-text);
-  font-size: 0.95rem;
-  outline: none;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-sizing: border-box;
+  padding: 0.8rem;
+  border-radius: 0.8rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.input-container label {
-  position: absolute;
-  left: 2.8rem;
-  top: 50%;
-  transform: translateY(-50%);
+.social-btn:hover {
+  background: var(--color-background-mute);
+  border-color: var(--color-border-hover);
+  transform: translateY(-1px);
+}
+
+/* Footer Formulário */
+.login-footer {
+  text-align: center;
+  margin-top: 2rem;
+  font-size: 0.9rem;
   color: var(--color-text-muted);
-  font-size: 0.95rem;
-  pointer-events: none;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.input-icon {
-  position: absolute;
-  left: 1rem;
-  color: var(--color-text-muted);
-  display: flex;
-  align-items: center;
-  pointer-events: none;
-  transition: color 0.3s ease;
-}
-
-/* Efeitos de Foco e Rótulo Flutuante (Floating Label) */
-.input-container input:focus,
-.input-group.has-value .input-container input {
-  padding-top: 1.5rem;
-  padding-bottom: 0.7rem;
-  border-color: var(--climb-cyan);
-  box-shadow: 0 0 0 4px var(--climb-cyan-light);
-}
-
-.input-container input:focus ~ label,
-.input-group.has-value .input-container label {
-  top: 30%;
-  transform: translateY(-80%);
-  font-size: 0.75rem;
+.login-footer a {
   color: var(--climb-cyan);
   font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease;
 }
 
-.input-container input:focus ~ .input-icon,
-.input-group.has-value .input-icon {
-  color: var(--climb-cyan);
+.login-footer a:hover {
+  color: var(--climb-cyan-hover);
+  text-decoration: underline;
 }
 
-/* Campo Senha com Olho */
-.password-toggle {
-  position: absolute;
-  right: 1rem;
-  background: none;
-  border: none;
-  color: var(--color-text-muted);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  padding: 0;
-  transition: color 0.3s ease;
-}
-
-.password-toggle:hover {
-  color: var(--climb-cyan);
-}
-
-/* Erros */
-.input-group.has-error .input-container input {
-  border-color: #e25c5c;
-}
-.input-group.has-error .input-container input:focus {
-  box-shadow: 0 0 0 4px rgba(226, 92, 92, 0.15);
-}
-.input-group.has-error .input-container label {
-  color: #e25c5c;
-}
-.input-group.has-error .input-icon {
-  color: #e25c5c;
-}
-
+/* Lado Esquerdo: Formulário - CSS Preservado para elementos complexos */
 .error-message {
   color: #e25c5c;
   font-size: 0.8rem;
@@ -530,27 +495,6 @@ const handleLogin = () => {
 @keyframes slideIn {
   from { opacity: 0; transform: translateY(-5px); }
   to { opacity: 1; transform: translateY(0); }
-}
-
-/* Opções de Login: Lembrar / Esqueci Senha */
-.form-options {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.85rem;
-  margin-top: 0.2rem;
-}
-
-.forgot-password {
-  color: var(--climb-cyan);
-  font-weight: 600;
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-.forgot-password:hover {
-  color: var(--climb-cyan-hover);
-  text-decoration: underline;
 }
 
 /* Checkbox Personalizado */
@@ -622,8 +566,8 @@ const handleLogin = () => {
 
 /* Botão Submissão */
 .submit-btn {
-  background: linear-gradient(135deg, var(--climb-cyan) 0%, var(--climb-cyan-hover) 100%);
-  color: #121312;
+  background: linear-gradient(135deg, var(--climbe-primary) 0%, var(--climbe-primary-hover) 100%) !important;
+  color: #fff !important;
   border: none;
   border-radius: 0.8rem;
   padding: 1.1rem;
@@ -634,14 +578,14 @@ const handleLogin = () => {
   justify-content: center;
   align-items: center;
   gap: 0.5rem;
-  box-shadow: 0 4px 14px var(--climb-cyan-light);
+  box-shadow: 0 4px 14px var(--climbe-primary-light);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   margin-top: 0.5rem;
 }
 
 .submit-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px var(--climb-cyan-glow);
+  box-shadow: 0 6px 20px var(--climbe-primary-glow);
   filter: brightness(1.05);
 }
 
@@ -670,78 +614,7 @@ const handleLogin = () => {
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
-
-/* Divisor */
-.divider {
-  display: flex;
-  align-items: center;
-  text-align: center;
-  color: var(--color-text-muted);
-  font-size: 0.8rem;
-  margin: 0.8rem 0;
-}
-
-.divider::before,
-.divider::after {
-  content: '';
-  flex: 1;
-  border-bottom: 1px solid var(--color-border);
-}
-
-.divider span {
-  padding: 0 0.8rem;
-  font-weight: 500;
-}
-
-/* Social Login */
-.social-login {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-}
-
-.social-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.6rem;
-  background: var(--color-background-soft);
-  border: 1px solid var(--color-border);
-  color: var(--color-text);
-  padding: 0.8rem;
-  border-radius: 0.8rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.social-btn:hover {
-  background: var(--color-background-mute);
-  border-color: var(--color-border-hover);
-  transform: translateY(-1px);
-}
-
-/* Footer Formulário */
-.login-footer {
-  text-align: center;
-  margin-top: 2rem;
-  font-size: 0.9rem;
-  color: var(--color-text-muted);
-}
-
-.login-footer a {
-  color: var(--climb-cyan);
-  font-weight: 600;
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-.login-footer a:hover {
-  color: var(--climb-cyan-hover);
-  text-decoration: underline;
-}
-
+/* Lado Direito: Visual Premium (Oculto em Mobile) */
 /* Lado Direito: Visual Premium (Oculto em Mobile) */
 .login-visual-side {
   display: none;

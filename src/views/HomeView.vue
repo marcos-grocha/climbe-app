@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, computed, onMounted } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import ClimbePageWrapper from '@/components/layout/ClimbePageWrapper.vue'
 import ClimbeCard from '@/components/ui/ClimbeCard.vue'
 import ClimbeButton from '@/components/ui/ClimbeButton.vue'
@@ -128,48 +128,48 @@ const deleteContract = (id) => {
   >
     
     <!-- ---------------- TAB 1: PAINEL GERAL (DASHBOARD) ---------------- -->
-    <div v-if="activeTab === 'dashboard'" class="tab-view-container">
-      <div class="db-welcome">
-        <h1>Painel de Acompanhamento</h1>
+    <div v-if="activeTab === 'dashboard'" class="flex flex-col gap-6">
+      <div class="mb-2">
+        <h1 class="text-[2rem] mb-1">Painel de Acompanhamento</h1>
         <p>Visão estratégica consolidada da gestão de contratos e alocações de capital.</p>
       </div>
 
       <!-- Métricas Atômicas (ClimbeCard) -->
-      <div class="metrics-grid">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <ClimbeCard padding="md" variant="solid" hoverable>
-          <div class="metric-header">
+          <div class="flex justify-between items-center text-[0.8rem] text-[var(--climbe-text-muted)] uppercase font-[var(--font-weight-heavy)] tracking-[0.05em] mb-3">
             <span>Contratos Vigentes</span>
             <ClimbeBadge variant="success">Fiduciário</ClimbeBadge>
           </div>
-          <div class="metric-value">{{ metrics.activeContracts }}</div>
-          <p class="metric-footer">Soma consolidada de aportes ativos</p>
+          <div class="text-[2.8rem] font-[var(--font-weight-black)] text-[var(--climbe-text-main)] leading-[1.1] mb-2">{{ metrics.activeContracts }}</div>
+          <p class="text-[0.8rem] text-[var(--climbe-text-muted)]">Soma consolidada de aportes ativos</p>
         </ClimbeCard>
 
         <ClimbeCard padding="md" variant="solid" hoverable>
-          <div class="metric-header">
+          <div class="flex justify-between items-center text-[0.8rem] text-[var(--climbe-text-muted)] uppercase font-[var(--font-weight-heavy)] tracking-[0.05em] mb-3">
             <span>Empresas Atendidas</span>
             <ClimbeBadge variant="primary">Parceiros</ClimbeBadge>
           </div>
-          <div class="metric-value">{{ metrics.managedCompanies }}</div>
-          <p class="metric-footer">Clientes corporativos ativos</p>
+          <div class="text-[2.8rem] font-[var(--font-weight-black)] text-[var(--climbe-text-main)] leading-[1.1] mb-2">{{ metrics.managedCompanies }}</div>
+          <p class="text-[0.8rem] text-[var(--climbe-text-muted)]">Clientes corporativos ativos</p>
         </ClimbeCard>
 
         <ClimbeCard padding="md" variant="solid" hoverable>
-          <div class="metric-header">
+          <div class="flex justify-between items-center text-[0.8rem] text-[var(--climbe-text-muted)] uppercase font-[var(--font-weight-heavy)] tracking-[0.05em] mb-3">
             <span>Assinaturas Pendentes</span>
             <ClimbeBadge variant="warning">Atenção</ClimbeBadge>
           </div>
-          <div class="metric-value">{{ metrics.pendingSignatures }}</div>
-          <p class="metric-footer">Aguardando aprovação jurídica</p>
+          <div class="text-[2.8rem] font-[var(--font-weight-black)] text-[var(--climbe-text-main)] leading-[1.1] mb-2">{{ metrics.pendingSignatures }}</div>
+          <p class="text-[0.8rem] text-[var(--climbe-text-muted)]">Aguardando aprovação jurídica</p>
         </ClimbeCard>
       </div>
 
       <!-- Visão Geral de Operações com ClimbeCard e ClimbeTable -->
-      <div class="db-section-row">
+      <div class="w-full">
         <ClimbeCard variant="solid" padding="lg">
           <template #header>
-            <div class="card-header-flex">
-              <h3>Contratos Recentes</h3>
+            <div class="flex justify-between items-center w-full">
+              <h3 class="text-[1.1rem] m-0">Contratos Recentes</h3>
               <ClimbeButton variant="ghost" @click="activeTab = 'contracts'">
                 Ver Todos &rarr;
               </ClimbeButton>
@@ -184,7 +184,7 @@ const deleteContract = (id) => {
           >
             <!-- Customização de valor em BRL -->
             <template #cell-value="{ item }">
-              <span class="font-bold">{{ formatCurrency(item.value) }}</span>
+              <span class="font-[var(--font-weight-heavy)] text-[var(--climbe-text-main)]">{{ formatCurrency(item.value) }}</span>
             </template>
             
             <!-- Customização de Badges de Status -->
@@ -197,7 +197,7 @@ const deleteContract = (id) => {
 
             <!-- Ações Rápidas -->
             <template #cell-actions="{ item }">
-              <div class="actions-flex">
+              <div class="flex gap-2 min-btn-wrapper">
                 <ClimbeButton variant="ghost" @click="alert(`Detalhes do contrato #${item.id}`)">Ver</ClimbeButton>
               </div>
             </template>
@@ -207,16 +207,16 @@ const deleteContract = (id) => {
     </div>
 
     <!-- ---------------- TAB 2: GESTÃO DE CONTRATOS ---------------- -->
-    <div v-else-if="activeTab === 'contracts'" class="tab-view-container">
-      <div class="db-welcome">
-        <h1>Gestão de Contratos</h1>
+    <div v-else-if="activeTab === 'contracts'" class="flex flex-col gap-6">
+      <div class="mb-2">
+        <h1 class="text-[2rem] mb-1">Gestão de Contratos</h1>
         <p>Consulte, filtre e analise os instrumentos fiduciários e parcerias da Climbe.</p>
       </div>
 
       <!-- Filtros da Tabela (ClimbeCard) -->
-      <ClimbeCard padding="md" variant="solid" class="filters-card">
-        <form @submit.prevent="handleSearch" class="filters-form">
-          <div class="filters-grid">
+      <ClimbeCard padding="md" variant="solid" class="mb-2">
+        <form @submit.prevent="handleSearch" class="flex flex-col gap-4">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <ClimbeInput 
               id="filter-title" 
               v-model="filters.title" 
@@ -245,7 +245,7 @@ const deleteContract = (id) => {
             </div>
           </div>
 
-          <div class="filters-actions">
+          <div class="flex justify-end gap-3">
             <ClimbeButton variant="ghost" type="button" @click="handleClearFilters">
               Limpar Filtros
             </ClimbeButton>
@@ -259,8 +259,8 @@ const deleteContract = (id) => {
       <!-- Tabela Corporativa com Paginação Integrada -->
       <ClimbeCard padding="lg" variant="solid">
         <template #header>
-          <div class="card-header-flex">
-            <h3>Instrumentos sob Gestão</h3>
+          <div class="flex justify-between items-center w-full">
+            <h3 class="text-[1.1rem] m-0">Instrumentos sob Gestão</h3>
             <ClimbeButton variant="primary" @click="alert('Criar novo contrato - Função Corporativa')">
               ➕ Novo Contrato
             </ClimbeButton>
@@ -278,12 +278,12 @@ const deleteContract = (id) => {
         >
           <!-- Customização do ID -->
           <template #cell-id="{ item }">
-            <span class="text-heavy font-mono text-cyan">#{{ item.id }}</span>
+            <span class="font-[var(--font-weight-heavy)] font-mono text-[var(--climbe-primary-hover)]">#{{ item.id }}</span>
           </template>
 
           <!-- Customização de valor em BRL -->
           <template #cell-value="{ item }">
-            <span class="font-bold">{{ formatCurrency(item.value) }}</span>
+            <span class="font-[var(--font-weight-heavy)] text-[var(--climbe-text-main)]">{{ formatCurrency(item.value) }}</span>
           </template>
           
           <!-- Customização de Badges de Status -->
@@ -296,7 +296,7 @@ const deleteContract = (id) => {
 
           <!-- Ações Rápidas -->
           <template #cell-actions="{ item }">
-            <div class="actions-flex">
+            <div class="flex gap-2 min-btn-wrapper">
               <ClimbeButton variant="ghost" @click="alert(`Detalhes do contrato #${item.id}`)">Ver</ClimbeButton>
               <ClimbeButton variant="danger" @click="deleteContract(item.id)">Arquivar</ClimbeButton>
             </div>
@@ -306,11 +306,11 @@ const deleteContract = (id) => {
     </div>
 
     <!-- ---------------- TABs PENDENTES / PLACEHOLDER ---------------- -->
-    <div v-else class="tab-view-container">
-      <ClimbeCard padding="lg" variant="solid" class="placeholder-card">
-        <span class="placeholder-icon">🚧</span>
-        <h2>Módulo em Construção</h2>
-        <p>A tela de <strong>{{ activeTab }}</strong> está sendo otimizada pelo Design System da Climbe.</p>
+    <div v-else class="flex flex-col gap-6">
+      <ClimbeCard padding="lg" variant="solid" class="text-center py-16 px-8 flex flex-col items-center gap-4 max-w-[600px] mx-auto mt-12 mb-12">
+        <span class="text-[3.5rem]">🚧</span>
+        <h2 class="text-[1.6rem] m-0">Módulo em Construção</h2>
+        <p class="text-[0.95rem] mb-2">A tela de <strong>{{ activeTab }}</strong> está sendo otimizada pelo Design System da Climbe.</p>
         <ClimbeButton variant="primary" @click="activeTab = 'dashboard'">
           Voltar ao Painel Geral
         </ClimbeButton>
@@ -320,126 +320,13 @@ const deleteContract = (id) => {
 </template>
 
 <style scoped>
-.tab-view-container {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
-}
-
-.db-welcome {
-  margin-bottom: var(--space-2);
-}
-
-.db-welcome h1 {
-  font-size: 2rem;
-  margin-bottom: var(--space-1);
-}
-
-/* Grid de Métricas */
-.metrics-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-4);
-}
-
-@media (min-width: 768px) {
-  .metrics-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-.metric-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.8rem;
-  color: var(--climbe-text-muted);
-  text-transform: uppercase;
-  font-weight: var(--font-weight-heavy);
-  letter-spacing: 0.05em;
-  margin-bottom: var(--space-3);
-}
-
-.metric-value {
-  font-size: 2.8rem;
-  font-weight: var(--font-weight-black);
-  color: var(--climbe-text-main);
-  line-height: 1.1;
-  margin-bottom: var(--space-2);
-}
-
-.metric-footer {
-  font-size: 0.8rem;
-  color: var(--climbe-text-muted);
-}
-
-/* Card Header Flex */
-.card-header-flex {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-}
-
-.card-header-flex h3 {
-  font-size: 1.1rem;
-  margin: 0;
-}
-
-/* Ações Flex */
-.actions-flex {
-  display: flex;
-  gap: var(--space-2);
-}
-
-.actions-flex .climbe-btn {
+/* Pequeno ajuste nos botões da tabela */
+.min-btn-wrapper :deep(.climbe-btn) {
   padding: var(--space-1) var(--space-3);
   font-size: 0.8rem;
 }
 
-.font-bold {
-  font-weight: var(--font-weight-heavy);
-  color: var(--climbe-text-main);
-}
-
-.font-mono {
-  font-family: monospace;
-}
-
-.text-cyan {
-  color: var(--climbe-primary-hover);
-}
-
-/* Filtros */
-.filters-card {
-  margin-bottom: var(--space-2);
-}
-
-.filters-form {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-
-.filters-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-4);
-}
-
-@media (min-width: 768px) {
-  .filters-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-.filters-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: var(--space-3);
-}
-
-/* Estilo do Select (Design System em CSS Vanilla) */
+/* Estilo do Select (Design System em CSS Vanilla mantido por complexidade) */
 .climbe-select-group {
   display: flex;
   flex-direction: column;
@@ -491,31 +378,5 @@ const deleteContract = (id) => {
   position: absolute;
   right: 1.2rem;
   pointer-events: none;
-}
-
-/* Placeholder módulo */
-.placeholder-card {
-  text-align: center;
-  padding: var(--space-16) var(--space-8);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-4);
-  max-width: 600px;
-  margin: var(--space-12) auto;
-}
-
-.placeholder-icon {
-  font-size: 3.5rem;
-}
-
-.placeholder-card h2 {
-  font-size: 1.6rem;
-  margin: 0;
-}
-
-.placeholder-card p {
-  font-size: 0.95rem;
-  margin-bottom: var(--space-2);
 }
 </style>

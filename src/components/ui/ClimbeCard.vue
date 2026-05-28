@@ -19,114 +19,44 @@ const props = defineProps({
 })
 
 const cardClasses = computed(() => {
-  return [
-    'climbe-card',
-    `climbe-card-${props.variant}`,
-    `climbe-card-p-${props.padding}`,
-    { 'climbe-card-hoverable': props.hoverable }
-  ]
+  const base = 'font-[var(--font-family-avenir)] rounded-[var(--radius-md)] flex flex-col relative transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] overflow-hidden box-border'
+  
+  const variants = {
+    solid: 'bg-[var(--climbe-neutral-card)] border border-[var(--climbe-neutral-border)] shadow-[var(--shadow-sm)]',
+    glass: 'bg-[rgba(255,255,255,0.03)] backdrop-blur-[16px] border border-[rgba(255,255,255,0.08)] shadow-[var(--shadow-lg)] [.dark-theme_&]:bg-[rgba(0,0,0,0.2)] [.dark-theme_&]:border-[rgba(255,255,255,0.05)]',
+    borderless: 'bg-transparent border-transparent shadow-none'
+  }
+
+  const paddings = {
+    none: 'p-0',
+    sm: 'p-[var(--space-3)]',
+    md: 'p-[var(--space-5)]',
+    lg: 'p-[var(--space-8)]'
+  }
+
+  const hoverEffect = props.hoverable 
+    ? 'hover:-translate-y-[3px] hover:shadow-[var(--shadow-lg)] hover:border-[var(--climbe-primary)]' 
+    : ''
+
+  return [base, variants[props.variant], paddings[props.padding], hoverEffect]
 })
 </script>
 
 <template>
   <div :class="cardClasses">
     <!-- Cabeçalho do Card (Opcional) -->
-    <div v-if="$slots.header" class="climbe-card-header">
+    <div v-if="$slots.header" class="border-b border-[var(--climbe-neutral-border)] pb-[var(--space-3)] mb-[var(--space-4)] flex justify-between items-center">
       <slot name="header"></slot>
     </div>
     
     <!-- Conteúdo do Card -->
-    <div class="climbe-card-body">
+    <div class="flex-1">
       <slot></slot>
     </div>
     
     <!-- Rodapé do Card (Opcional) -->
-    <div v-if="$slots.footer" class="climbe-card-footer">
+    <div v-if="$slots.footer" class="border-t border-[var(--climbe-neutral-border)] pt-[var(--space-3)] mt-[var(--space-4)] flex justify-between items-center">
       <slot name="footer"></slot>
     </div>
   </div>
 </template>
-
-<style scoped>
-.climbe-card {
-  font-family: var(--font-family-avenir);
-  border-radius: var(--radius-md);
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow: hidden;
-}
-
-/* 1. Variantes de Visual */
-.climbe-card-solid {
-  background-color: var(--climbe-neutral-card);
-  border: 1px solid var(--climbe-neutral-border);
-  box-shadow: var(--shadow-sm);
-}
-
-.climbe-card-glass {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: var(--shadow-lg);
-}
-
-/* No modo escuro o vidro fica mais escuro e elegante */
-:global(.dark-theme) .climbe-card-glass {
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.climbe-card-borderless {
-  background-color: transparent;
-  border: none;
-  box-shadow: none;
-}
-
-/* 2. Padrões de Padding */
-.climbe-card-p-none {
-  padding: 0;
-}
-.climbe-card-p-sm {
-  padding: var(--space-3);
-}
-.climbe-card-p-md {
-  padding: var(--space-5);
-}
-.climbe-card-p-lg {
-  padding: var(--space-8);
-}
-
-/* 3. Efeito Interativo (Hoverable) */
-.climbe-card-hoverable:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-lg);
-  border-color: var(--climbe-primary);
-}
-
-/* Estruturas Internas */
-.climbe-card-header {
-  border-bottom: 1px solid var(--climbe-neutral-border);
-  padding-bottom: var(--space-3);
-  margin-bottom: var(--space-4);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.climbe-card-body {
-  flex: 1;
-}
-
-.climbe-card-footer {
-  border-top: 1px solid var(--climbe-neutral-border);
-  padding-top: var(--space-3);
-  margin-top: var(--space-4);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-</style>
