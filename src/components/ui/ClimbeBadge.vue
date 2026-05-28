@@ -14,11 +14,18 @@ const props = defineProps({
 })
 
 const badgeClasses = computed(() => {
-  return [
-    'climbe-badge',
-    `climbe-badge-${props.variant}`,
-    { 'climbe-badge-pill': props.pill }
-  ]
+  const base = "inline-flex items-center gap-1 font-avenir font-heavy text-[0.75rem] py-1 px-2 leading-none uppercase tracking-wider w-fit whitespace-nowrap"
+  const rounded = props.pill ? "rounded-full px-3" : "rounded-xs"
+  
+  const variants = {
+    primary: "bg-climbe-primary-light text-climbe-primary-hover border border-climbe-primary/25",
+    success: "bg-climbe-success-light text-climbe-success border border-climbe-success/20",
+    warning: "bg-climbe-warning-light text-climbe-warning border border-climbe-warning/20",
+    danger: "bg-climbe-danger-light text-climbe-danger border border-climbe-danger/20",
+    info: "bg-climbe-secondary-light text-climbe-text-muted border border-climbe-neutral-border"
+  }
+
+  return `${base} ${rounded} ${variants[props.variant]}`
 })
 </script>
 
@@ -27,63 +34,3 @@ const badgeClasses = computed(() => {
     <slot></slot>
   </span>
 </template>
-
-<style scoped>
-.climbe-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-1);
-  font-family: var(--font-family-avenir);
-  font-weight: var(--font-weight-heavy);
-  font-size: 0.75rem;
-  padding: var(--space-1) var(--space-2);
-  border-radius: var(--radius-xs);
-  line-height: 1;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  width: fit-content;
-  white-space: nowrap;
-}
-
-.climbe-badge-pill {
-  border-radius: var(--radius-full);
-  padding-left: var(--space-3);
-  padding-right: var(--space-3);
-}
-
-/* 1. Variantes de Status */
-/* Primary */
-.climbe-badge-primary {
-  background-color: var(--climbe-primary-light);
-  color: var(--climbe-primary-hover);
-  border: 1px solid rgba(95, 194, 186, 0.25);
-}
-
-/* Success */
-.climbe-badge-success {
-  background-color: var(--climbe-success-light);
-  color: var(--climbe-success);
-  border: 1px solid rgba(76, 175, 80, 0.2);
-}
-
-/* Warning */
-.climbe-badge-warning {
-  background-color: var(--climbe-warning-light);
-  color: var(--climbe-warning);
-  border: 1px solid rgba(252, 168, 75, 0.2);
-}
-
-/* Danger */
-.climbe-badge-danger {
-  background-color: var(--climbe-danger-light);
-  color: var(--climbe-danger);
-  border: 1px solid rgba(226, 92, 92, 0.2);
-}
-
-/* Info / Neutro */
-.climbe-badge-info {
-  background-color: var(--climbe-secondary-light);
-  color: var(--climbe-text-muted);
-  border: 1px solid var(--climbe-neutral-border);
-}
-</style>

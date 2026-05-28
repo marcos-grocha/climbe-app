@@ -19,114 +19,44 @@ const props = defineProps({
 })
 
 const cardClasses = computed(() => {
-  return [
-    'climbe-card',
-    `climbe-card-${props.variant}`,
-    `climbe-card-p-${props.padding}`,
-    { 'climbe-card-hoverable': props.hoverable }
-  ]
+  const base = "font-avenir rounded-md box-border flex flex-col relative transition-all duration-300 overflow-hidden"
+  
+  const paddings = {
+    none: "p-0",
+    sm: "p-3",
+    md: "p-5",
+    lg: "p-8"
+  }
+  
+  const hoverEffect = props.hoverable 
+    ? "hover:-translate-y-[3px] hover:shadow-lg hover:border-climbe-primary" 
+    : ""
+
+  const variants = {
+    solid: "bg-climbe-neutral-card border border-climbe-neutral-border shadow-sm",
+    glass: "bg-white/5 backdrop-blur-md border border-white/10 shadow-lg dark:bg-black/20 dark:border-white/5",
+    borderless: "bg-transparent border-none shadow-none"
+  }
+
+  return `${base} ${paddings[props.padding]} ${variants[props.variant]} ${hoverEffect}`
 })
 </script>
 
 <template>
   <div :class="cardClasses">
     <!-- Cabeçalho do Card (Opcional) -->
-    <div v-if="$slots.header" class="climbe-card-header">
+    <div v-if="$slots.header" class="border-b border-climbe-neutral-border pb-3 mb-4 flex justify-between items-center">
       <slot name="header"></slot>
     </div>
     
     <!-- Conteúdo do Card -->
-    <div class="climbe-card-body">
+    <div class="flex-1">
       <slot></slot>
     </div>
     
     <!-- Rodapé do Card (Opcional) -->
-    <div v-if="$slots.footer" class="climbe-card-footer">
+    <div v-if="$slots.footer" class="border-t border-climbe-neutral-border pt-3 mt-4 flex justify-between items-center">
       <slot name="footer"></slot>
     </div>
   </div>
 </template>
-
-<style scoped>
-.climbe-card {
-  font-family: var(--font-family-avenir);
-  border-radius: var(--radius-md);
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow: hidden;
-}
-
-/* 1. Variantes de Visual */
-.climbe-card-solid {
-  background-color: var(--climbe-neutral-card);
-  border: 1px solid var(--climbe-neutral-border);
-  box-shadow: var(--shadow-sm);
-}
-
-.climbe-card-glass {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: var(--shadow-lg);
-}
-
-/* No modo escuro o vidro fica mais escuro e elegante */
-:global(.dark-theme) .climbe-card-glass {
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.climbe-card-borderless {
-  background-color: transparent;
-  border: none;
-  box-shadow: none;
-}
-
-/* 2. Padrões de Padding */
-.climbe-card-p-none {
-  padding: 0;
-}
-.climbe-card-p-sm {
-  padding: var(--space-3);
-}
-.climbe-card-p-md {
-  padding: var(--space-5);
-}
-.climbe-card-p-lg {
-  padding: var(--space-8);
-}
-
-/* 3. Efeito Interativo (Hoverable) */
-.climbe-card-hoverable:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-lg);
-  border-color: var(--climbe-primary);
-}
-
-/* Estruturas Internas */
-.climbe-card-header {
-  border-bottom: 1px solid var(--climbe-neutral-border);
-  padding-bottom: var(--space-3);
-  margin-bottom: var(--space-4);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.climbe-card-body {
-  flex: 1;
-}
-
-.climbe-card-footer {
-  border-top: 1px solid var(--climbe-neutral-border);
-  padding-top: var(--space-3);
-  margin-top: var(--space-4);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-</style>

@@ -7,7 +7,6 @@ import ClimbeInput from '@/components/ui/ClimbeInput.vue'
 import ClimbeBadge from '@/components/ui/ClimbeBadge.vue'
 import ClimbeTable from '@/components/ui/ClimbeTable.vue'
 
-// 1. Estado de Navegação e Layout
 const activeTab = ref('dashboard')
 const pageTitle = computed(() => {
   if (activeTab.value === 'dashboard') return 'Painel Geral'
@@ -19,17 +18,15 @@ const handleSidebarNavigate = (itemId) => {
   activeTab.value = itemId
 }
 
-// 2. Estado do Dashboard Fictício (Métricas)
-const metrics = reactive({
-  activeContracts: 48,
-  managedCompanies: 24,
-  pendingSignatures: 7
+const metricas = reactive({
+  contratosAtivos: 48,
+  empresasAtendidas: 24,
+  assinaturasPendentes: 7
 })
 
-// 3. Estado da Gestão de Contratos (Pesquisa e Tabela)
 const filters = reactive({
-  title: '',
-  company: '',
+  titulo: '',
+  empresa: '',
   status: ''
 })
 
@@ -37,51 +34,46 @@ const isTableLoading = ref(false)
 const currentPage = ref(1)
 const itemsPerPage = 4
 
-// Base de Dados de Contratos Corporativos da Climbe
-const allContracts = ref([
-  { id: '1042', title: 'Prestação de Serviço de Assessoria', company: 'XP Investimentos', value: 35000, status: 'approved', date: '24/05/2026' },
-  { id: '1041', title: 'Aporte de Capital em Seed Money', company: 'Norte Capital S/A', value: 1200000, status: 'active', date: '20/05/2026' },
-  { id: '1040', title: 'Contrato de Parceria Estruturada', company: 'Itaú Unibanco', value: 85000, status: 'active', date: '18/05/2026' },
-  { id: '1039', title: 'Locação de Sala Comercial Corp', company: 'Imobiliária Prime', value: 12500, status: 'pending', date: '12/05/2026' },
-  { id: '1038', title: 'Aquisição de Ativos de Renda Fixa', company: 'BTG Pactual S/A', value: 450000, status: 'approved', date: '08/05/2026' },
-  { id: '1037', title: 'Fornecimento de Licenças SaaS ERP', company: 'Oracle Corp', value: 24000, status: 'canceled', date: '05/05/2026' },
-  { id: '1036', title: 'Auditoria Externa de Riscos', company: 'Deloitte Brasil', value: 95000, status: 'pending', date: '02/05/2026' },
-  { id: '1035', title: 'Consultoria de Fusões & Aquisições', company: 'PwC Global', value: 300000, status: 'active', date: '28/04/2026' }
+const todosContratos = ref([
+  { id: '1042', titulo: 'Prestação de Serviço de Assessoria', empresa: 'XP Investimentos', valor: 35000, status: 'approved', data: '24/05/2026' },
+  { id: '1041', titulo: 'Aporte de Capital em Seed Money', empresa: 'Norte Capital S/A', valor: 1200000, status: 'active', data: '20/05/2026' },
+  { id: '1040', titulo: 'Contrato de Parceria Estruturada', empresa: 'Itaú Unibanco', valor: 85000, status: 'active', data: '18/05/2026' },
+  { id: '1039', titulo: 'Locação de Sala Comercial Corp', empresa: 'Imobiliária Prime', valor: 12500, status: 'pending', data: '12/05/2026' },
+  { id: '1038', titulo: 'Aquisição de Ativos de Renda Fixa', empresa: 'BTG Pactual S/A', valor: 450000, status: 'approved', data: '08/05/2026' },
+  { id: '1037', titulo: 'Fornecimento de Licenças SaaS ERP', empresa: 'Oracle Corp', valor: 24000, status: 'canceled', data: '05/05/2026' },
+  { id: '1036', titulo: 'Auditoria Externa de Riscos', empresa: 'Deloitte Brasil', valor: 95000, status: 'pending', data: '02/05/2026' },
+  { id: '1035', titulo: 'Consultoria de Fusões & Aquisições', empresa: 'PwC Global', valor: 300000, status: 'active', data: '28/04/2026' }
 ])
 
-// Cabeçalhos para a ClimbeTable
 const tableHeaders = [
   { value: 'id', label: 'ID' },
-  { value: 'title', label: 'Contrato / Título' },
-  { value: 'company', label: 'Empresa Parceira' },
-  { value: 'value', label: 'Valor do Aporte' },
-  { value: 'date', label: 'Data de Assinatura' },
+  { value: 'titulo', label: 'Contrato / Título' },
+  { value: 'empresa', label: 'Empresa Parceira' },
+  { value: 'valor', label: 'Valor do Aporte' },
+  { value: 'data', label: 'Data de Assinatura' },
   { value: 'status', label: 'Status' },
   { value: 'actions', label: 'Ações' }
 ]
 
-// Filtragem Reativa de Contratos
-const filteredContracts = computed(() => {
-  return allContracts.value.filter(item => {
-    const matchesTitle = !filters.title || item.title.toLowerCase().includes(filters.title.toLowerCase())
-    const matchesCompany = !filters.company || item.company.toLowerCase().includes(filters.company.toLowerCase())
+const contratosFiltrados = computed(() => {
+  return todosContratos.value.filter(item => {
+    const matchesTitle = !filters.titulo || item.titulo.toLowerCase().includes(filters.titulo.toLowerCase())
+    const matchesCompany = !filters.empresa || item.empresa.toLowerCase().includes(filters.empresa.toLowerCase())
     const matchesStatus = !filters.status || item.status === filters.status
     return matchesTitle && matchesCompany && matchesStatus
   })
 })
 
-// Paginação Reativa
-const paginatedContracts = computed(() => {
+const contratosPaginados = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage
   const end = start + itemsPerPage
-  return filteredContracts.value.slice(start, end)
+  return contratosFiltrados.value.slice(start, end)
 })
 
 const totalPages = computed(() => {
-  return Math.ceil(filteredContracts.value.length / itemsPerPage) || 1
+  return Math.ceil(contratosFiltrados.value.length / itemsPerPage) || 1
 })
 
-// Lógica de Filtros e Pesquisa
 const handleSearch = () => {
   isTableLoading.value = true
   currentPage.value = 1
@@ -91,8 +83,8 @@ const handleSearch = () => {
 }
 
 const handleClearFilters = () => {
-  filters.title = ''
-  filters.company = ''
+  filters.titulo = ''
+  filters.empresa = ''
   filters.status = ''
   handleSearch()
 }
@@ -106,15 +98,13 @@ const handlePageChange = (page) => {
   }, 500)
 }
 
-// Formatar moeda brasileira
 const formatCurrency = (val) => {
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val)
 }
 
-// Lógica de exclusão rápida
-const deleteContract = (id) => {
+const deletarContrato = (id) => {
   if (confirm(`Deseja realmente arquivar o contrato #${id}?`)) {
-    allContracts.value = allContracts.value.filter(c => c.id !== id)
+    todosContratos.value = todosContratos.value.filter(c => c.id !== id)
     alert(`Contrato #${id} arquivado com sucesso!`)
   }
 }
@@ -126,68 +116,62 @@ const deleteContract = (id) => {
     :active-tab="activeTab"
     @navigate="handleSidebarNavigate"
   >
-    
-    <!-- ---------------- TAB 1: PAINEL GERAL (DASHBOARD) ---------------- -->
-    <div v-if="activeTab === 'dashboard'" class="tab-view-container">
-      <div class="db-welcome">
-        <h1>Painel de Acompanhamento</h1>
-        <p>Visão estratégica consolidada da gestão de contratos e alocações de capital.</p>
+    <!-- TAB 1: PAINEL GERAL (DASHBOARD) -->
+    <div v-if="activeTab === 'dashboard'" class="flex flex-col gap-6">
+      <div class="mb-2">
+        <h1 class="text-[2rem] mb-1 font-black">Painel de Acompanhamento</h1>
+        <p class="text-climbe-text-muted">Visão estratégica consolidada da gestão de contratos e alocações de capital.</p>
       </div>
 
-      <!-- Métricas Atômicas (ClimbeCard) -->
-      <div class="metrics-grid">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <ClimbeCard padding="md" variant="solid" hoverable>
-          <div class="metric-header">
+          <div class="flex justify-between items-center text-[0.8rem] text-climbe-text-muted uppercase font-heavy tracking-wider mb-3">
             <span>Contratos Vigentes</span>
             <ClimbeBadge variant="success">Fiduciário</ClimbeBadge>
           </div>
-          <div class="metric-value">{{ metrics.activeContracts }}</div>
-          <p class="metric-footer">Soma consolidada de aportes ativos</p>
+          <div class="text-[2.8rem] font-black text-climbe-text-main leading-[1.1] mb-2">{{ metricas.contratosAtivos }}</div>
+          <p class="text-[0.8rem] text-climbe-text-muted">Soma consolidada de aportes ativos</p>
         </ClimbeCard>
 
         <ClimbeCard padding="md" variant="solid" hoverable>
-          <div class="metric-header">
+          <div class="flex justify-between items-center text-[0.8rem] text-climbe-text-muted uppercase font-heavy tracking-wider mb-3">
             <span>Empresas Atendidas</span>
             <ClimbeBadge variant="primary">Parceiros</ClimbeBadge>
           </div>
-          <div class="metric-value">{{ metrics.managedCompanies }}</div>
-          <p class="metric-footer">Clientes corporativos ativos</p>
+          <div class="text-[2.8rem] font-black text-climbe-text-main leading-[1.1] mb-2">{{ metricas.empresasAtendidas }}</div>
+          <p class="text-[0.8rem] text-climbe-text-muted">Clientes corporativos ativos</p>
         </ClimbeCard>
 
         <ClimbeCard padding="md" variant="solid" hoverable>
-          <div class="metric-header">
+          <div class="flex justify-between items-center text-[0.8rem] text-climbe-text-muted uppercase font-heavy tracking-wider mb-3">
             <span>Assinaturas Pendentes</span>
             <ClimbeBadge variant="warning">Atenção</ClimbeBadge>
           </div>
-          <div class="metric-value">{{ metrics.pendingSignatures }}</div>
-          <p class="metric-footer">Aguardando aprovação jurídica</p>
+          <div class="text-[2.8rem] font-black text-climbe-text-main leading-[1.1] mb-2">{{ metricas.assinaturasPendentes }}</div>
+          <p class="text-[0.8rem] text-climbe-text-muted">Aguardando aprovação jurídica</p>
         </ClimbeCard>
       </div>
 
-      <!-- Visão Geral de Operações com ClimbeCard e ClimbeTable -->
-      <div class="db-section-row">
+      <div class="flex flex-col gap-4">
         <ClimbeCard variant="solid" padding="lg">
           <template #header>
-            <div class="card-header-flex">
-              <h3>Contratos Recentes</h3>
+            <div class="flex justify-between items-center w-full">
+              <h3 class="text-[1.1rem] m-0 font-heavy">Contratos Recentes</h3>
               <ClimbeButton variant="ghost" @click="activeTab = 'contracts'">
                 Ver Todos &rarr;
               </ClimbeButton>
             </div>
           </template>
 
-          <!-- Tabela Atômica Reutilizável -->
           <ClimbeTable
             :headers="tableHeaders"
-            :items="allContracts.slice(0, 3)"
+            :items="todosContratos.slice(0, 3)"
             :loading="false"
           >
-            <!-- Customização de valor em BRL -->
-            <template #cell-value="{ item }">
-              <span class="font-bold">{{ formatCurrency(item.value) }}</span>
+            <template #cell-valor="{ item }">
+              <span class="font-heavy text-climbe-text-main">{{ formatCurrency(item.valor) }}</span>
             </template>
             
-            <!-- Customização de Badges de Status -->
             <template #cell-status="{ item }">
               <ClimbeBadge v-if="item.status === 'active'" variant="primary">Vigente</ClimbeBadge>
               <ClimbeBadge v-else-if="item.status === 'approved'" variant="success">Aprovado</ClimbeBadge>
@@ -195,10 +179,9 @@ const deleteContract = (id) => {
               <ClimbeBadge v-else variant="danger">Cancelado</ClimbeBadge>
             </template>
 
-            <!-- Ações Rápidas -->
             <template #cell-actions="{ item }">
-              <div class="actions-flex">
-                <ClimbeButton variant="ghost" @click="alert(`Detalhes do contrato #${item.id}`)">Ver</ClimbeButton>
+              <div class="flex gap-2">
+                <ClimbeButton variant="ghost" class="!px-3 !py-1 !text-[0.8rem]" @click="alert(`Detalhes do contrato #${item.id}`)">Ver</ClimbeButton>
               </div>
             </template>
           </ClimbeTable>
@@ -206,46 +189,45 @@ const deleteContract = (id) => {
       </div>
     </div>
 
-    <!-- ---------------- TAB 2: GESTÃO DE CONTRATOS ---------------- -->
-    <div v-else-if="activeTab === 'contracts'" class="tab-view-container">
-      <div class="db-welcome">
-        <h1>Gestão de Contratos</h1>
-        <p>Consulte, filtre e analise os instrumentos fiduciários e parcerias da Climbe.</p>
+    <!-- TAB 2: GESTÃO DE CONTRATOS -->
+    <div v-else-if="activeTab === 'contracts'" class="flex flex-col gap-6">
+      <div class="mb-2">
+        <h1 class="text-[2rem] mb-1 font-black">Gestão de Contratos</h1>
+        <p class="text-climbe-text-muted">Consulte, filtre e analise os instrumentos fiduciários e parcerias da Climbe.</p>
       </div>
 
-      <!-- Filtros da Tabela (ClimbeCard) -->
-      <ClimbeCard padding="md" variant="solid" class="filters-card">
-        <form @submit.prevent="handleSearch" class="filters-form">
-          <div class="filters-grid">
+      <ClimbeCard padding="md" variant="solid" class="mb-2">
+        <form @submit.prevent="handleSearch" class="flex flex-col gap-4">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <ClimbeInput 
               id="filter-title" 
-              v-model="filters.title" 
+              v-model="filters.titulo" 
               label="Título do Contrato" 
               placeholder="Ex: Assessoria..."
             />
             <ClimbeInput 
               id="filter-company" 
-              v-model="filters.company" 
+              v-model="filters.empresa" 
               label="Empresa Parceira" 
               placeholder="Ex: XP..."
             />
             
-            <!-- Campo Select do Design System em CSS Vanilla -->
-            <div class="climbe-select-group">
-              <div class="select-container">
-                <select id="filter-status" v-model="filters.status" class="climbe-select-field">
+            <div class="flex flex-col relative font-avenir group" :class="{ 'has-value': filters.status }">
+              <div class="relative flex items-center">
+                <select id="filter-status" v-model="filters.status" class="peer w-full px-4 pt-[1.5rem] pb-[0.7rem] rounded-sm border border-climbe-neutral-border bg-climbe-neutral-card text-climbe-text-main text-[0.95rem] outline-none transition-all duration-250 box-border appearance-none cursor-pointer focus:border-climbe-primary focus:ring-[3px] focus:ring-climbe-primary-light">
                   <option value="">Todos os Status</option>
                   <option value="active">Vigente</option>
                   <option value="approved">Aprovado</option>
                   <option value="pending">Em Análise</option>
                   <option value="canceled">Cancelado</option>
                 </select>
-                <label for="filter-status" class="climbe-select-label">Status do Contrato</label>
+                <label for="filter-status" class="absolute left-4 top-[30%] -translate-y-[80%] scale-80 text-climbe-primary font-heavy pointer-events-none text-[0.95rem] origin-top-left">Status do Contrato</label>
+                <div class="after:content-['▼'] after:text-[0.7rem] after:text-climbe-text-muted after:absolute after:right-5 after:pointer-events-none flex items-center h-full absolute right-0"></div>
               </div>
             </div>
           </div>
 
-          <div class="filters-actions">
+          <div class="flex justify-end gap-3">
             <ClimbeButton variant="ghost" type="button" @click="handleClearFilters">
               Limpar Filtros
             </ClimbeButton>
@@ -256,11 +238,10 @@ const deleteContract = (id) => {
         </form>
       </ClimbeCard>
 
-      <!-- Tabela Corporativa com Paginação Integrada -->
       <ClimbeCard padding="lg" variant="solid">
         <template #header>
-          <div class="card-header-flex">
-            <h3>Instrumentos sob Gestão</h3>
+          <div class="flex justify-between items-center w-full">
+            <h3 class="text-[1.1rem] m-0 font-heavy">Instrumentos sob Gestão</h3>
             <ClimbeButton variant="primary" @click="alert('Criar novo contrato - Função Corporativa')">
               ➕ Novo Contrato
             </ClimbeButton>
@@ -269,24 +250,21 @@ const deleteContract = (id) => {
 
         <ClimbeTable
           :headers="tableHeaders"
-          :items="paginatedContracts"
+          :items="contratosPaginados"
           :loading="isTableLoading"
           :current-page="currentPage"
           :total-pages="totalPages"
           empty-text="Nenhum contrato corresponde aos filtros informados."
           @page-change="handlePageChange"
         >
-          <!-- Customização do ID -->
           <template #cell-id="{ item }">
-            <span class="text-heavy font-mono text-cyan">#{{ item.id }}</span>
+            <span class="font-heavy font-mono text-climbe-primary-hover">#{{ item.id }}</span>
           </template>
 
-          <!-- Customização de valor em BRL -->
-          <template #cell-value="{ item }">
-            <span class="font-bold">{{ formatCurrency(item.value) }}</span>
+          <template #cell-valor="{ item }">
+            <span class="font-heavy text-climbe-text-main">{{ formatCurrency(item.valor) }}</span>
           </template>
           
-          <!-- Customização de Badges de Status -->
           <template #cell-status="{ item }">
             <ClimbeBadge v-if="item.status === 'active'" variant="primary">Vigente</ClimbeBadge>
             <ClimbeBadge v-else-if="item.status === 'approved'" variant="success">Aprovado</ClimbeBadge>
@@ -294,23 +272,22 @@ const deleteContract = (id) => {
             <ClimbeBadge v-else variant="danger">Cancelado</ClimbeBadge>
           </template>
 
-          <!-- Ações Rápidas -->
           <template #cell-actions="{ item }">
-            <div class="actions-flex">
-              <ClimbeButton variant="ghost" @click="alert(`Detalhes do contrato #${item.id}`)">Ver</ClimbeButton>
-              <ClimbeButton variant="danger" @click="deleteContract(item.id)">Arquivar</ClimbeButton>
+            <div class="flex gap-2">
+              <ClimbeButton variant="ghost" class="!px-3 !py-1 !text-[0.8rem]" @click="alert(`Detalhes do contrato #${item.id}`)">Ver</ClimbeButton>
+              <ClimbeButton variant="danger" class="!px-3 !py-1 !text-[0.8rem]" @click="deletarContrato(item.id)">Arquivar</ClimbeButton>
             </div>
           </template>
         </ClimbeTable>
       </ClimbeCard>
     </div>
 
-    <!-- ---------------- TABs PENDENTES / PLACEHOLDER ---------------- -->
-    <div v-else class="tab-view-container">
-      <ClimbeCard padding="lg" variant="solid" class="placeholder-card">
-        <span class="placeholder-icon">🚧</span>
-        <h2>Módulo em Construção</h2>
-        <p>A tela de <strong>{{ activeTab }}</strong> está sendo otimizada pelo Design System da Climbe.</p>
+    <!-- TABs PENDENTES / PLACEHOLDER -->
+    <div v-else class="flex flex-col gap-6">
+      <ClimbeCard padding="lg" variant="solid" class="text-center flex flex-col items-center gap-4 max-w-[600px] mx-auto mt-12 py-16">
+        <span class="text-[3.5rem]">🚧</span>
+        <h2 class="text-[1.6rem] m-0 font-heavy">Módulo em Construção</h2>
+        <p class="text-[0.95rem] mb-2 text-climbe-text-muted">A tela de <strong class="font-heavy">{{ activeTab }}</strong> está sendo otimizada pelo Design System da Climbe.</p>
         <ClimbeButton variant="primary" @click="activeTab = 'dashboard'">
           Voltar ao Painel Geral
         </ClimbeButton>
@@ -318,204 +295,3 @@ const deleteContract = (id) => {
     </div>
   </ClimbePageWrapper>
 </template>
-
-<style scoped>
-.tab-view-container {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
-}
-
-.db-welcome {
-  margin-bottom: var(--space-2);
-}
-
-.db-welcome h1 {
-  font-size: 2rem;
-  margin-bottom: var(--space-1);
-}
-
-/* Grid de Métricas */
-.metrics-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-4);
-}
-
-@media (min-width: 768px) {
-  .metrics-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-.metric-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.8rem;
-  color: var(--climbe-text-muted);
-  text-transform: uppercase;
-  font-weight: var(--font-weight-heavy);
-  letter-spacing: 0.05em;
-  margin-bottom: var(--space-3);
-}
-
-.metric-value {
-  font-size: 2.8rem;
-  font-weight: var(--font-weight-black);
-  color: var(--climbe-text-main);
-  line-height: 1.1;
-  margin-bottom: var(--space-2);
-}
-
-.metric-footer {
-  font-size: 0.8rem;
-  color: var(--climbe-text-muted);
-}
-
-/* Card Header Flex */
-.card-header-flex {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-}
-
-.card-header-flex h3 {
-  font-size: 1.1rem;
-  margin: 0;
-}
-
-/* Ações Flex */
-.actions-flex {
-  display: flex;
-  gap: var(--space-2);
-}
-
-.actions-flex .climbe-btn {
-  padding: var(--space-1) var(--space-3);
-  font-size: 0.8rem;
-}
-
-.font-bold {
-  font-weight: var(--font-weight-heavy);
-  color: var(--climbe-text-main);
-}
-
-.font-mono {
-  font-family: monospace;
-}
-
-.text-cyan {
-  color: var(--climbe-primary-hover);
-}
-
-/* Filtros */
-.filters-card {
-  margin-bottom: var(--space-2);
-}
-
-.filters-form {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-
-.filters-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-4);
-}
-
-@media (min-width: 768px) {
-  .filters-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-.filters-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: var(--space-3);
-}
-
-/* Estilo do Select (Design System em CSS Vanilla) */
-.climbe-select-group {
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  font-family: var(--font-family-avenir);
-}
-
-.select-container {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.climbe-select-field {
-  width: 100%;
-  padding: 1.5rem 1rem 0.7rem 1rem;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--climbe-neutral-border);
-  background: var(--climbe-neutral-card);
-  color: var(--climbe-text-main);
-  font-size: 0.95rem;
-  outline: none;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  box-sizing: border-box;
-  appearance: none;
-  cursor: pointer;
-}
-
-.climbe-select-field:focus {
-  border-color: var(--climbe-primary);
-  box-shadow: 0 0 0 3px var(--climbe-primary-light);
-}
-
-.climbe-select-label {
-  position: absolute;
-  left: 1rem;
-  top: 30%;
-  transform: translateY(-80%) scale(0.8);
-  color: var(--climbe-primary);
-  font-weight: var(--font-weight-heavy);
-  pointer-events: none;
-  font-size: 0.95rem;
-}
-
-.select-container::after {
-  content: '▼';
-  font-size: 0.7rem;
-  color: var(--climbe-text-muted);
-  position: absolute;
-  right: 1.2rem;
-  pointer-events: none;
-}
-
-/* Placeholder módulo */
-.placeholder-card {
-  text-align: center;
-  padding: var(--space-16) var(--space-8);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-4);
-  max-width: 600px;
-  margin: var(--space-12) auto;
-}
-
-.placeholder-icon {
-  font-size: 3.5rem;
-}
-
-.placeholder-card h2 {
-  font-size: 1.6rem;
-  margin: 0;
-}
-
-.placeholder-card p {
-  font-size: 0.95rem;
-  margin-bottom: var(--space-2);
-}
-</style>

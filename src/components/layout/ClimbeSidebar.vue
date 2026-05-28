@@ -1,15 +1,7 @@
 <script setup>
-import { computed } from 'vue'
-
 const props = defineProps({
-  collapsed: {
-    type: Boolean,
-    default: false
-  },
-  activeItem: {
-    type: String,
-    default: 'dashboard'
-  }
+  collapsed: { type: Boolean, default: false },
+  activeItem: { type: String, default: 'dashboard' }
 })
 
 const emit = defineEmits(['toggle', 'navigate'])
@@ -25,260 +17,53 @@ const menuItems = [
   { id: 'settings', label: 'Configurações', icon: '⚙️' }
 ]
 
-const handleNavigate = (itemId) => {
-  emit('navigate', itemId)
-}
+const handleNavigate = (itemId) => emit('navigate', itemId)
 </script>
 
 <template>
-  <aside class="climbe-sidebar" :class="{ 'collapsed': collapsed }">
-    <!-- Header da Sidebar -->
-    <div class="sidebar-header">
-      <div v-if="!collapsed" class="sidebar-brand-text">
-        <span>CLIMB</span><span class="meta-label">CORP</span>
+  <aside 
+    class="bg-climbe-secondary text-white/85 flex flex-col border-r border-white/5 font-avenir relative shrink-0 box-border z-50 h-screen transition-[width] duration-300"
+    :class="collapsed ? 'w-[72px]' : 'w-[260px]'"
+  >
+    <div class="h-[70px] flex items-center justify-between px-4 border-b border-white/5 box-border">
+      <div v-if="!collapsed" class="font-black text-[1.2rem] tracking-wider text-white flex items-center gap-1">
+        <span>CLIMB</span><span class="text-[0.7rem] bg-climbe-primary text-[#121312] px-1 py-0.5 rounded-xs font-heavy">CORP</span>
       </div>
-      <div v-else class="sidebar-brand-text-collapsed">C</div>
+      <div v-else class="font-black text-[1.3rem] text-climbe-primary ml-2">C</div>
       
-      <!-- Botão para Recolher/Expandir -->
-      <button class="collapse-toggle" @click="$emit('toggle')">
+      <button 
+        class="bg-white/5 border border-white/10 text-white w-7 h-7 rounded-full cursor-pointer flex items-center justify-center text-[0.85rem] transition-colors outline-none hover:bg-climbe-primary hover:border-climbe-primary hover:text-[#121312]" 
+        @click="$emit('toggle')"
+      >
         {{ collapsed ? '→' : '←' }}
       </button>
     </div>
 
-    <!-- Links de Navegação -->
-    <nav class="sidebar-nav">
-      <ul>
+    <nav class="flex-1 py-4 overflow-y-auto">
+      <ul class="list-none flex flex-col gap-1 px-2 m-0">
         <li v-for="item in menuItems" :key="item.id">
           <button 
-            class="nav-link-btn" 
-            :class="{ 'active': activeItem === item.id }"
+            class="w-full bg-transparent border-none text-white/65 px-4 py-3 rounded-sm cursor-pointer flex items-center gap-3 text-[0.9rem] font-medium text-left transition-colors relative outline-none box-border hover:bg-white/5 hover:text-white"
+            :class="activeItem === item.id ? 'bg-[#5fc2ba14] text-climbe-primary font-heavy' : ''"
             @click="handleNavigate(item.id)"
             :title="item.label"
           >
-            <span class="nav-icon">{{ item.icon }}</span>
-            <span v-if="!collapsed" class="nav-label">{{ item.label }}</span>
-            <span v-if="activeItem === item.id" class="active-indicator"></span>
+            <span class="text-[1.15rem] flex items-center justify-center w-6">{{ item.icon }}</span>
+            <span v-if="!collapsed" class="whitespace-nowrap animate-[fadeIn_0.2s_ease]">{{ item.label }}</span>
+            <span v-if="activeItem === item.id" class="absolute left-0 top-1/4 h-1/2 w-[3px] bg-climbe-primary rounded-r-[4px]"></span>
           </button>
         </li>
       </ul>
     </nav>
 
-    <!-- Footer da Sidebar (Perfil Fictício Abreviado) -->
-    <div class="sidebar-footer">
-      <div class="footer-profile">
-        <span class="profile-avatar">👨‍💼</span>
-        <div v-if="!collapsed" class="profile-info">
-          <span class="profile-name">Admin Climbe</span>
-          <span class="profile-status">Online</span>
+    <div class="p-4 border-t border-white/5 box-border">
+      <div class="flex items-center gap-3">
+        <span class="text-[1.4rem] w-9 h-9 rounded-full bg-white/5 flex items-center justify-center">👨‍💼</span>
+        <div v-if="!collapsed" class="flex flex-col">
+          <span class="text-[0.85rem] font-heavy text-white">Admin Climbe</span>
+          <span class="text-[0.7rem] text-climbe-primary flex items-center gap-1 before:content-[''] before:inline-block before:w-[6px] before:h-[6px] before:rounded-full before:bg-climbe-primary">Online</span>
         </div>
       </div>
     </div>
   </aside>
 </template>
-
-<style scoped>
-.climbe-sidebar {
-  width: 260px;
-  height: 100vh;
-  background-color: var(--climbe-secondary);
-  color: rgba(255, 255, 255, 0.85);
-  display: flex;
-  flex-direction: column;
-  border-right: 1px solid rgba(255, 255, 255, 0.05);
-  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  font-family: var(--font-family-avenir);
-  position: relative;
-  flex-shrink: 0;
-  box-sizing: border-box;
-  z-index: 100;
-}
-
-.climbe-sidebar.collapsed {
-  width: 72px;
-}
-
-/* Header */
-.sidebar-header {
-  height: 70px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 var(--space-4);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  box-sizing: border-box;
-}
-
-.sidebar-brand-text {
-  font-weight: var(--font-weight-black);
-  font-size: 1.2rem;
-  letter-spacing: 0.05em;
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  gap: var(--space-1);
-}
-
-.sidebar-brand-text .meta-label {
-  font-size: 0.7rem;
-  background: var(--climbe-primary);
-  color: var(--climbe-text-on-primary);
-  padding: var(--space-05) var(--space-1);
-  border-radius: var(--radius-xs);
-  font-weight: var(--font-weight-heavy);
-}
-
-.sidebar-brand-text-collapsed {
-  font-weight: var(--font-weight-black);
-  font-size: 1.3rem;
-  color: var(--climbe-primary);
-  margin-left: var(--space-2);
-}
-
-.collapse-toggle {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #ffffff;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.85rem;
-  transition: all 0.2s ease;
-  outline: none;
-}
-
-.collapse-toggle:hover {
-  background: var(--climbe-primary);
-  border-color: var(--climbe-primary);
-  color: var(--climbe-text-on-primary);
-}
-
-/* Links */
-.sidebar-nav {
-  flex: 1;
-  padding: var(--space-4) 0;
-  overflow-y: auto;
-}
-
-.sidebar-nav ul {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  padding: 0 var(--space-2);
-}
-
-.nav-link-btn {
-  width: 100%;
-  background: none;
-  border: none;
-  color: rgba(255, 255, 255, 0.65);
-  padding: var(--space-3) var(--space-4);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  font-size: 0.9rem;
-  font-weight: var(--font-weight-medium);
-  text-align: left;
-  transition: all 0.2s ease;
-  position: relative;
-  outline: none;
-  box-sizing: border-box;
-}
-
-.nav-link-btn:hover {
-  background-color: rgba(255, 255, 255, 0.04);
-  color: #ffffff;
-}
-
-.nav-link-btn.active {
-  background-color: rgba(95, 194, 186, 0.08);
-  color: var(--climbe-primary);
-  font-weight: var(--font-weight-heavy);
-}
-
-.nav-icon {
-  font-size: 1.15rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-}
-
-.nav-label {
-  white-space: nowrap;
-  animation: fadeIn 0.2s ease;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.active-indicator {
-  position: absolute;
-  left: 0;
-  top: 25%;
-  height: 50%;
-  width: 3px;
-  background-color: var(--climbe-primary);
-  border-radius: 0 4px 4px 0;
-}
-
-/* Footer */
-.sidebar-footer {
-  padding: var(--space-4);
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-  box-sizing: border-box;
-}
-
-.footer-profile {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-}
-
-.profile-avatar {
-  font-size: 1.4rem;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.05);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.profile-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.profile-name {
-  font-size: 0.85rem;
-  font-weight: var(--font-weight-heavy);
-  color: #ffffff;
-}
-
-.profile-status {
-  font-size: 0.7rem;
-  color: var(--climbe-primary);
-  display: flex;
-  align-items: center;
-  gap: var(--space-1);
-}
-
-.profile-status::before {
-  content: '';
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background-color: var(--climbe-primary);
-}
-</style>
