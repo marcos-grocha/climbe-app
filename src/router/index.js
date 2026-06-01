@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import LoginView from '../views/LoginView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -8,16 +9,36 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: LoginView,
+      meta: { guestOnly: true }
     },
     {
       path: '/about',
       name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
       component: () => import('../views/AboutView.vue'),
+      meta: { requiresAuth: true }
     },
   ],
+})
+
+// Controle de Acesso (Navigation Guard)
+router.beforeEach((to, from, next) => {
+  const isAuthenticated = localStorage.getItem('climb-auth') === 'true'
+
+  if (to.meta.requiresAuth && !isAuthenticated) {
+    // Redireciona para login se tentar acessar rota protegida sem estar autenticado
+    next({ name: 'login' })
+  } else if (to.meta.guestOnly && isAuthenticated) {
+    // Redireciona para home se já estiver logado e tentar ir para o login
+    next({ name: 'home' })
+  } else {
+    next()
+  }
 })
 
 export default router
