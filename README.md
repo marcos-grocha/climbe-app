@@ -11,7 +11,7 @@ Sistema para gerenciar o ciclo de vida de contratos: propostas comerciais, docum
 | Camada | Tecnologia | Repositório |
 |---|---|---|
 | **Frontend** | Vue 3 + Vite + Pinia + Vue Router + PrimeVue + Tailwind | **este repositório** |
-| Backend | Python 3.12 + FastAPI + SQLAlchemy + Alembic | `climbe-backend` |
+| Backend | Python 3.12 + FastAPI + SQLAlchemy + Alembic | `climbe-api` |
 | Banco | PostgreSQL (Docker) | — |
 | Integrações | google-api-python-client | — |
 
@@ -19,7 +19,7 @@ Sistema para gerenciar o ciclo de vida de contratos: propostas comerciais, docum
 
 | Papel | Responsabilidade |
 |---|---|
-| Tech Lead / Backend | Marcão: API REST, banco, autenticação, integrações Google (em `climbe-backend`) |
+| Tech Lead / Backend | Marcão: API REST, banco, autenticação, integrações Google (em `climbe-api`) |
 | Frontend Dev 1 | Hunald: a definir |
 | Frontend Dev 2 | Valtson: a definir |
 | Frontend Dev 3 | Gabriel: a definir |
@@ -36,7 +36,7 @@ Roadmap detalhado em [docs/04-roadmap.md](docs/04-roadmap.md).
 
 ```bash
 git clone <url-do-repo>
-cd climbe-frontend
+cd climbe-app
 npm install
 npm run dev
 ```
@@ -83,7 +83,7 @@ npm install vee-validate yup
 ## Estrutura de pastas
 
 ```
-climbe-frontend/
+climbe-app/
 ├── docs/                    # Documentação do squad (leia antes de codar)
 │   ├── 01-stack.md
 │   ├── 02-padroes-codigo.md

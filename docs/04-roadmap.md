@@ -38,7 +38,7 @@
 **Meta:** login funcionando + CRUDs básicos de empresa e usuário, integrados ponta a ponta.
 
 **Backend:**
-- Setup do `climbe-backend` (FastAPI + Alembic + Docker Compose só pro banco)
+- Setup do `climbe-api` (FastAPI + Alembic + Docker Compose só pro banco)
 - Modelagem das tabelas a partir do diagrama ER (ajustado pro fluxo do "Novo Fluxograma Climbe")
 - Autenticação por email/senha com JWT
 - CRUD de usuário, empresa e cargo
