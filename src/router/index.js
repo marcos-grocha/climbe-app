@@ -9,19 +9,25 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView,
-      meta: { requiresAuth: true }
+      meta: { requiresAuth: true },
     },
     {
       path: '/login',
       name: 'login',
       component: LoginView,
-      meta: { guestOnly: true }
+      meta: { guestOnly: true },
     },
     {
       path: '/about',
       name: 'about',
       component: () => import('../views/AboutView.vue'),
-      meta: { requiresAuth: true }
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/empresas',
+      name: 'empresas',
+      component: () => import('@/views/EmpresasListView.vue'),
+      meta: { requiresAuth: true },
     },
   ],
 })

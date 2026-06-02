@@ -2,7 +2,8 @@ import axios from 'axios'
 import router from '@/router/index.js'
 
 const http = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL:
+    import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000',
 })
 
 // Injeta o token JWT em toda requisição
