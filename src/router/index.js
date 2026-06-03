@@ -29,6 +29,24 @@ const router = createRouter({
       component: () => import('@/views/EmpresasListView.vue'),
       meta: { requiresAuth: true },
     },
+    {
+      path: '/propostas',
+      name: 'propostas',
+      component: () => import('@/views/PropostasListView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/propostas/nova',
+      name: 'proposta-nova',
+      component: () => import('@/views/PropostaFormView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/propostas/:id/editar',
+      name: 'proposta-editar',
+      component: () => import('@/views/PropostaFormView.vue'),
+      meta: { requiresAuth: true },
+    },
   ],
 })
 
