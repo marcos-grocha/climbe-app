@@ -27,6 +27,15 @@ const router = createRouter({
       path: '/empresas',
       name: 'empresas',
       component: () => import('@/views/EmpresasListView.vue'),
+      path: '/contratos',
+      name: 'contratos',
+      component: () => import('../views/contratos/ContratosListView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/contratos/:id',
+      name: 'contrato-detalhe',
+      component: () => import('../views/contratos/ContratoDetailView.vue'),
       meta: { requiresAuth: true },
     },
     {
@@ -53,12 +62,9 @@ const router = createRouter({
 // Controle de Acesso (Navigation Guard)
 router.beforeEach((to, from, next) => {
   const isAuthenticated = localStorage.getItem('climb-auth') === 'true'
-
   if (to.meta.requiresAuth && !isAuthenticated) {
-    // Redireciona para login se tentar acessar rota protegida sem estar autenticado
     next({ name: 'login' })
   } else if (to.meta.guestOnly && isAuthenticated) {
-    // Redireciona para home se já estiver logado e tentar ir para o login
     next({ name: 'home' })
   } else {
     next()
