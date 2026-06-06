@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
 
 defineProps({
   title: { type: String, default: 'Painel Geral' },
@@ -8,6 +9,7 @@ defineProps({
 })
 
 const router = useRouter()
+const authStore = useAuthStore()
 const isDark = ref(false)
 const showNotifications = ref(false)
 
@@ -29,9 +31,8 @@ const toggleTheme = () => {
 }
 
 const handleLogout = () => {
-  localStorage.removeItem('climb-auth')
-  localStorage.removeItem('climb-user-email')
-  router.push('/login')
+  authStore.logout()
+  router.push({ name: 'login' })
 }
 </script>
 
@@ -142,13 +143,13 @@ const handleLogout = () => {
         <div
           class="w-9 h-9 rounded-full bg-gradient-to-br from-climbe-primary to-climbe-primary-hover text-[#121312] flex items-center justify-center font-black text-[0.95rem]"
         >
-          {{ userEmail.charAt(0).toUpperCase() }}
+          {{ (authStore.user?.nome_completo || userEmail).charAt(0).toUpperCase() }}
         </div>
         <div class="hidden md:flex flex-col">
           <span class="text-[0.85rem] font-heavy text-climbe-text-main leading-[1.2]"
-            >Administrador Climbe</span
+            >{{ authStore.user?.nome_completo || 'Administrador Climbe' }}</span
           >
-          <span class="text-[0.7rem] text-climbe-text-muted">{{ userEmail }}</span>
+          <span class="text-[0.7rem] text-climbe-text-muted">{{ authStore.user?.email || userEmail }}</span>
         </div>
       </div>
 
