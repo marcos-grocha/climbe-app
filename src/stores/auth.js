@@ -20,13 +20,13 @@ export const useAuthStore = defineStore('auth', () => {
 
       const { data } = await http.post('/auth/login', params, {
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        }
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
       })
-      
+
       token.value = data.access_token
       localStorage.setItem('token', data.access_token)
-      
+
       await fetchMe()
     } catch (err) {
       error.value = err
@@ -47,7 +47,7 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       await fetchMe()
       return true
-    } catch (err) {
+    } catch {
       // Se der 401, o interceptor do http.js fará o redirect e apaga o token do localStorage
       // Mas para limpar o estado da store e remover lixos do mock, chamamos logout internamente (sem o router push para evitar loop)
       token.value = null

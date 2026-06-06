@@ -146,10 +146,12 @@ const handleLogout = () => {
           {{ (authStore.user?.nome_completo || userEmail).charAt(0).toUpperCase() }}
         </div>
         <div class="hidden md:flex flex-col">
-          <span class="text-[0.85rem] font-heavy text-climbe-text-main leading-[1.2]"
-            >{{ authStore.user?.nome_completo || 'Administrador Climbe' }}</span
-          >
-          <span class="text-[0.7rem] text-climbe-text-muted">{{ authStore.user?.email || userEmail }}</span>
+          <span class="text-[0.85rem] font-heavy text-climbe-text-main leading-[1.2]">{{
+            authStore.user?.nome_completo || 'Administrador Climbe'
+          }}</span>
+          <span class="text-[0.7rem] text-climbe-text-muted">{{
+            authStore.user?.email || userEmail
+          }}</span>
         </div>
       </div>
 
