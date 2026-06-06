@@ -27,6 +27,9 @@ const router = createRouter({
       path: '/empresas',
       name: 'empresas',
       component: () => import('@/views/EmpresasListView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/contratos',
       name: 'contratos',
       component: () => import('../views/contratos/ContratosListView.vue'),
@@ -61,7 +64,7 @@ const router = createRouter({
 
 // Controle de Acesso (Navigation Guard)
 router.beforeEach((to, from, next) => {
-  const isAuthenticated = localStorage.getItem('climb-auth') === 'true'
+  const isAuthenticated = !!localStorage.getItem('token')
   if (to.meta.requiresAuth && !isAuthenticated) {
     next({ name: 'login' })
   } else if (to.meta.guestOnly && isAuthenticated) {

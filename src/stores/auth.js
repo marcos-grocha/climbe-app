@@ -5,26 +5,30 @@ import router from '@/router/index.js'
 
 export const useAuthStore = defineStore('auth', () => {
   const token = ref(localStorage.getItem('token') || null)
-  const usuario = ref(JSON.parse(localStorage.getItem('usuario')) || null)
 
   const estaAutenticado = computed(() => !!token.value)
 
   async function login(email, senha) {
-    const { data } = await http.post('/auth/login', { email, senha })
+    const params = new URLSearchParams()
+    params.append('username', email)
+    params.append('password', senha)
+
+    const { data } = await http.post('/auth/login', params, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    })
+    
     token.value = data.access_token
-    usuario.value = data.usuario
     localStorage.setItem('token', data.access_token)
-    localStorage.setItem('usuario', JSON.stringify(data.usuario))
-    router.push('/')
+    // Removed router.push from here so the view can handle success/error state
   }
 
   function logout() {
     token.value = null
-    usuario.value = null
     localStorage.removeItem('token')
-    localStorage.removeItem('usuario')
     router.push('/login')
   }
 
-  return { token, usuario, estaAutenticado, login, logout }
+  return { token, estaAutenticado, login, logout }
 })
