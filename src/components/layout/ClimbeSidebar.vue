@@ -15,7 +15,7 @@ const menuItems = [
   { id: 'propostas', label: 'Propostas', icon: '🧾', path: '/propostas' },
   { id: 'empresas', label: 'Empresas & Clientes', icon: '🏢', path: '/empresas' },
   { id: 'users', label: 'Gestao de Usuarios', icon: '👥' },
-  { id: 'meetings', label: 'Reunioes & Atas', icon: '🗓' },
+  { id: 'meetings', label: 'Reunioes & Atas', icon: '🗓', path: '/reunioes' },
   { id: 'documents', label: 'Documentos', icon: '📁' },
   { id: 'reports', label: 'Relatorios', icon: '📈' },
   { id: 'settings', label: 'Configuracoes', icon: '⚙️' },
