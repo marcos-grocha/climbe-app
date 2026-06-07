@@ -30,6 +30,18 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: '/empresas/nova',
+      name: 'empresa-nova',
+      component: () => import('@/views/EmpresaFormView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/empresas/:id/editar',
+      name: 'empresa-editar',
+      component: () => import('@/views/EmpresaFormView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/contratos',
       name: 'contratos',
       component: () => import('../views/contratos/ContratosListView.vue'),
