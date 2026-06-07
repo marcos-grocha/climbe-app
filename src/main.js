@@ -15,8 +15,13 @@ app.use(createPinia())
 app.use(router)
 app.use(PrimeVue, {
   theme: {
+feature/tela
+    preset: Aura
+  }
+
     preset: Aura,
   },
+ main
 })
 
 app.mount('#app')
