@@ -193,8 +193,11 @@ onMounted(async () => {
       >
         {{ mensagemErro }}
       </div>
-      
-      <div v-if="empresasStore.carregando && modoEdicao" class="text-center py-10 text-climbe-text-muted">
+
+      <div
+        v-if="empresasStore.carregando && modoEdicao"
+        class="text-center py-10 text-climbe-text-muted"
+      >
         Carregando dados da empresa...
       </div>
 
@@ -204,7 +207,11 @@ onMounted(async () => {
       >
         <div class="grid grid-cols-1 gap-8">
           <section class="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <h3 class="m-0 md:col-span-2 text-lg font-semibold border-b border-[#5fc2ba24] pb-2 mb-2">Dados da empresa</h3>
+            <h3
+              class="m-0 md:col-span-2 text-lg font-semibold border-b border-[#5fc2ba24] pb-2 mb-2"
+            >
+              Dados da empresa
+            </h3>
 
             <div class="flex flex-col gap-2">
               <label for="razao_social">Razão social</label>
@@ -215,7 +222,9 @@ onMounted(async () => {
             <div class="flex flex-col gap-2">
               <label for="nome_fantasia">Nome fantasia</label>
               <InputText id="nome_fantasia" v-model="empresaSelecionada.nome_fantasia" />
-              <small v-if="erros.nome_fantasia" class="text-red-400">{{ erros.nome_fantasia }}</small>
+              <small v-if="erros.nome_fantasia" class="text-red-400">{{
+                erros.nome_fantasia
+              }}</small>
             </div>
 
             <div class="flex flex-col gap-2">
@@ -238,7 +247,11 @@ onMounted(async () => {
           </section>
 
           <section class="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <h3 class="m-0 md:col-span-2 text-lg font-semibold border-b border-[#5fc2ba24] pb-2 mb-2 mt-4">Endereço</h3>
+            <h3
+              class="m-0 md:col-span-2 text-lg font-semibold border-b border-[#5fc2ba24] pb-2 mb-2 mt-4"
+            >
+              Endereço
+            </h3>
 
             <div class="flex flex-col gap-2">
               <label for="cep">CEP</label>
@@ -249,25 +262,33 @@ onMounted(async () => {
             <div class="flex flex-col gap-2">
               <label for="logradouro">Logradouro</label>
               <InputText id="logradouro" v-model="empresaSelecionada.endereco.logradouro" />
-              <small v-if="erros.endereco_logradouro" class="text-red-400">{{ erros.endereco_logradouro }}</small>
+              <small v-if="erros.endereco_logradouro" class="text-red-400">{{
+                erros.endereco_logradouro
+              }}</small>
             </div>
 
             <div class="flex flex-col gap-2">
               <label for="numero">Número</label>
               <InputText id="numero" v-model="empresaSelecionada.endereco.numero" />
-              <small v-if="erros.endereco_numero" class="text-red-400">{{ erros.endereco_numero }}</small>
+              <small v-if="erros.endereco_numero" class="text-red-400">{{
+                erros.endereco_numero
+              }}</small>
             </div>
 
             <div class="flex flex-col gap-2">
               <label for="bairro">Bairro</label>
               <InputText id="bairro" v-model="empresaSelecionada.endereco.bairro" />
-              <small v-if="erros.endereco_bairro" class="text-red-400">{{ erros.endereco_bairro }}</small>
+              <small v-if="erros.endereco_bairro" class="text-red-400">{{
+                erros.endereco_bairro
+              }}</small>
             </div>
 
             <div class="flex flex-col gap-2">
               <label for="cidade">Cidade</label>
               <InputText id="cidade" v-model="empresaSelecionada.endereco.cidade" />
-              <small v-if="erros.endereco_cidade" class="text-red-400">{{ erros.endereco_cidade }}</small>
+              <small v-if="erros.endereco_cidade" class="text-red-400">{{
+                erros.endereco_cidade
+              }}</small>
             </div>
 
             <div class="flex flex-col gap-2">
@@ -280,12 +301,18 @@ onMounted(async () => {
                 optionValue="value"
                 placeholder="Selecione"
               />
-              <small v-if="erros.endereco_estado" class="text-red-400">{{ erros.endereco_estado }}</small>
+              <small v-if="erros.endereco_estado" class="text-red-400">{{
+                erros.endereco_estado
+              }}</small>
             </div>
           </section>
 
           <section class="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <h3 class="m-0 md:col-span-2 text-lg font-semibold border-b border-[#5fc2ba24] pb-2 mb-2 mt-4">Representante legal</h3>
+            <h3
+              class="m-0 md:col-span-2 text-lg font-semibold border-b border-[#5fc2ba24] pb-2 mb-2 mt-4"
+            >
+              Representante legal
+            </h3>
 
             <div class="flex flex-col gap-2">
               <label for="representante_nome">Nome</label>
@@ -293,7 +320,9 @@ onMounted(async () => {
                 id="representante_nome"
                 v-model="empresaSelecionada.representante_legal.nome"
               />
-              <small v-if="erros.representante_nome" class="text-red-400">{{ erros.representante_nome }}</small>
+              <small v-if="erros.representante_nome" class="text-red-400">{{
+                erros.representante_nome
+              }}</small>
             </div>
 
             <div class="flex flex-col gap-2">
@@ -302,7 +331,9 @@ onMounted(async () => {
                 id="representante_cpf"
                 v-model="empresaSelecionada.representante_legal.cpf"
               />
-              <small v-if="erros.representante_cpf" class="text-red-400">{{ erros.representante_cpf }}</small>
+              <small v-if="erros.representante_cpf" class="text-red-400">{{
+                erros.representante_cpf
+              }}</small>
             </div>
 
             <div class="flex flex-col gap-2">
@@ -311,14 +342,21 @@ onMounted(async () => {
                 id="representante_telefone"
                 v-model="empresaSelecionada.representante_legal.telefone"
               />
-              <small v-if="erros.representante_telefone" class="text-red-400">{{ erros.representante_telefone }}</small>
+              <small v-if="erros.representante_telefone" class="text-red-400">{{
+                erros.representante_telefone
+              }}</small>
             </div>
           </section>
         </div>
 
         <div class="mt-8 flex items-center justify-end gap-3 border-t border-[#5fc2ba24] pt-5">
           <Button label="Cancelar" text @click="navegarParaEmpresas" class="!font-bold" />
-          <Button :label="textoBotaoSalvar" :loading="salvando" @click="salvarEmpresa" class="!bg-[#67cec7] !text-[#0f1618] hover:!bg-[#7ad8d2] !border-0 !font-bold !px-6" />
+          <Button
+            :label="textoBotaoSalvar"
+            :loading="salvando"
+            @click="salvarEmpresa"
+            class="!bg-[#67cec7] !text-[#0f1618] hover:!bg-[#7ad8d2] !border-0 !font-bold !px-6"
+          />
         </div>
       </section>
     </div>
