@@ -27,6 +27,9 @@ const router = createRouter({
       path: '/empresas',
       name: 'empresas',
       component: () => import('@/views/EmpresasListView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/contratos',
       name: 'contratos',
       component: () => import('../views/contratos/ContratosListView.vue'),

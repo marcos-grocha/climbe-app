@@ -1,6 +1,8 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useNotificationsStore } from '@/stores/notifications'
+import { storeToRefs } from 'pinia'
 
 defineProps({
   title: { type: String, default: 'Painel Geral' },
@@ -11,8 +13,25 @@ const router = useRouter()
 const isDark = ref(false)
 const showNotifications = ref(false)
 
+const notificationsStore = useNotificationsStore()
+const { notifications, unreadCount } = storeToRefs(notificationsStore)
+
+let pollingInterval = null
+
 onMounted(() => {
   isDark.value = document.documentElement.classList.contains('dark-theme')
+  notificationsStore.fetchNotifications()
+
+  // Polling a cada 30 segundos
+  pollingInterval = setInterval(() => {
+    notificationsStore.pollNewNotifications()
+  }, 30000)
+})
+
+onUnmounted(() => {
+  if (pollingInterval) {
+    clearInterval(pollingInterval)
+  }
 })
 
 const toggleTheme = () => {
@@ -99,38 +118,42 @@ const handleLogout = () => {
         >
           <span class="text-[1.1rem]">🔔</span>
           <span
-            class="absolute top-[2px] right-[2px] w-2 h-2 bg-climbe-danger border-[1.5px] border-climbe-neutral-card rounded-full"
-          ></span>
+            v-if="unreadCount > 0"
+            class="absolute -top-[3px] -right-[3px] bg-climbe-danger text-white text-[9px] font-bold h-4 min-w-[16px] rounded-full px-1 flex items-center justify-center border border-climbe-neutral-card leading-none"
+          >
+            {{ unreadCount }}
+          </span>
         </button>
 
         <div
           v-if="showNotifications"
           class="absolute top-[46px] right-0 w-[320px] bg-climbe-neutral-card border border-climbe-neutral-border rounded-md shadow-lg overflow-hidden animate-[dropIn_0.25s_cubic-bezier(0.4,0,0.2,1)]"
         >
-          <div
-            class="p-3 px-4 bg-climbe-neutral-mute font-heavy text-[0.8rem] uppercase text-climbe-text-muted border-b border-climbe-neutral-border"
-          >
-            Notificações Recentes
-          </div>
-          <div class="flex flex-col max-h-[280px] overflow-y-auto">
-            <div
-              class="p-3 px-4 border-b border-climbe-neutral-border flex gap-2 items-start text-[0.82rem] text-climbe-text-main transition-colors bg-[#5fc2ba0a] hover:bg-climbe-primary-light"
-            >
-              <span class="w-[6px] h-[6px] bg-climbe-primary rounded-full mt-[6px] shrink-0"></span>
-              <div class="flex flex-col gap-0.5">
-                <p class="m-0">
-                  <strong class="font-heavy">Contrato #1042</strong> aprovado por XP Investimentos.
-                </p>
-                <span class="text-[0.7rem] text-climbe-text-muted">Há 15 min</span>
+          <div class="flex flex-col max-h-[300px] overflow-y-auto">
+            <template v-if="notifications.length > 0">
+              <div
+                v-for="item in notifications"
+                :key="item.id"
+                class="p-3 px-4 border-b border-climbe-neutral-border flex gap-2 items-start text-[0.82rem] text-climbe-text-main transition-colors cursor-pointer"
+                :class="{
+                  'bg-[#5fc2ba0a] hover:bg-[#5fc2ba15]': !item.read,
+                  'hover:bg-climbe-primary-light': item.read,
+                }"
+                @click="notificationsStore.markAsRead(item.id)"
+              >
+                <span
+                  v-if="!item.read"
+                  class="w-[6px] h-[6px] bg-climbe-primary rounded-full mt-[6px] shrink-0"
+                ></span>
+                <span v-else class="w-[6px] h-[6px] shrink-0 opacity-0 mt-[6px]"></span>
+                <div class="flex flex-col gap-0.5 w-full">
+                  <p class="m-0 text-climbe-text-main leading-snug" v-html="item.text"></p>
+                  <span class="text-[0.7rem] text-climbe-text-muted mt-0.5">{{ item.time }}</span>
+                </div>
               </div>
-            </div>
-            <div
-              class="p-3 px-4 border-b border-climbe-neutral-border flex gap-2 items-start text-[0.82rem] text-climbe-text-main transition-colors hover:bg-climbe-primary-light"
-            >
-              <div class="flex flex-col gap-0.5">
-                <p class="m-0">Reunião com diretoria agendada para amanhã, 14:00.</p>
-                <span class="text-[0.7rem] text-climbe-text-muted">Há 2 horas</span>
-              </div>
+            </template>
+            <div v-else class="p-6 text-center text-climbe-text-muted text-[0.85rem]">
+              Nenhuma notificação por enquanto.
             </div>
           </div>
         </div>
