@@ -1,9 +1,11 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
 import ClimbLogo from '@/components/ClimbLogo.vue'
 
 const router = useRouter()
+const authStore = useAuthStore()
 
 const form = reactive({
   email: '',
@@ -20,6 +22,7 @@ const isSubmitting = ref(false)
 const showPassword = ref(false)
 const loginSuccess = ref(false)
 const isDark = ref(false)
+const authError = ref('')
 
 onMounted(() => {
   const savedTheme = localStorage.getItem('climb-theme')
@@ -69,25 +72,39 @@ const validatePassword = () => {
   }
 }
 
-const handleLogin = () => {
+const handleLogin = async () => {
   validateEmail()
   validatePassword()
 
   if (errors.email || errors.password) return
 
   isSubmitting.value = true
+  authError.value = ''
 
-  setTimeout(() => {
+  try {
+    await authStore.login(form.email, form.password)
+
+    // Remove os mocks antigos caso existam
+    localStorage.removeItem('climb-auth')
+    localStorage.removeItem('climb-user-email')
+
     isSubmitting.value = false
     loginSuccess.value = true
-
-    localStorage.setItem('climb-auth', 'true')
-    localStorage.setItem('climb-user-email', form.email)
 
     setTimeout(() => {
       router.push('/')
     }, 1200)
-  }, 2000)
+  } catch (error) {
+    isSubmitting.value = false
+
+    if (error.response?.status === 401) {
+      authError.value = 'E-mail ou senha incorretos.'
+    } else if (error.response?.status === 422) {
+      authError.value = 'Dados inválidos. Verifique as informações fornecidas.'
+    } else {
+      authError.value = 'Não foi possível conectar ao servidor. Tente novamente.'
+    }
+  }
 }
 </script>
 
@@ -184,6 +201,27 @@ const handleLogin = () => {
         </div>
 
         <form v-else @submit.prevent="handleLogin" class="flex flex-col gap-6" novalidate>
+          <div
+            v-if="authError"
+            class="bg-[#e25c5c]/10 border border-[#e25c5c]/20 text-[#e25c5c] px-4 py-3 rounded-sm text-[0.9rem] flex items-center gap-2 animate-[fadeIn_0.3s_ease]"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            {{ authError }}
+          </div>
           <div
             class="flex flex-col gap-1 relative group"
             :class="{ 'has-error': errors.email, 'has-value': form.email }"

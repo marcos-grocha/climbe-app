@@ -30,6 +30,20 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      feature/formulario-de-agendamento
+      path: '/empresas/nova',
+      name: 'empresa-nova',
+      component: () => import('@/views/EmpresaFormView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/empresas/:id/editar',
+      name: 'empresa-editar',
+      component: () => import('@/views/EmpresaFormView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      main
       path: '/contratos',
       name: 'contratos',
       component: () => import('../views/contratos/ContratosListView.vue'),
@@ -86,13 +100,42 @@ const router = createRouter({
   ],
 })
 
+import { useAuthStore } from '@/stores/auth'
+
 // Controle de Acesso (Navigation Guard)
-router.beforeEach((to, from, next) => {
-  const isAuthenticated = localStorage.getItem('climb-auth') === 'true'
-  if (to.meta.requiresAuth && !isAuthenticated) {
-    next({ name: 'login' })
-  } else if (to.meta.guestOnly && isAuthenticated) {
-    next({ name: 'home' })
+router.beforeEach(async (to, from, next) => {
+  const authStore = useAuthStore()
+  const hasToken = !!localStorage.getItem('token')
+  const requiresAuth = to.meta.requiresAuth
+  const guestOnly = to.meta.guestOnly
+
+  if (requiresAuth) {
+    if (!hasToken) {
+      next({ name: 'login' })
+    } else {
+      if (!authStore.user) {
+        const restored = await authStore.restoreSession()
+        if (!restored) {
+          next({ name: 'login' })
+          return
+        }
+      }
+      next()
+    }
+  } else if (guestOnly) {
+    if (hasToken) {
+      if (!authStore.user) {
+        const restored = await authStore.restoreSession()
+        if (restored) {
+          next({ name: 'home' })
+          return
+        }
+      } else {
+        next({ name: 'home' })
+        return
+      }
+    }
+    next()
   } else {
     next()
   }
