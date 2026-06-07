@@ -7,20 +7,20 @@ const props = defineProps({
   theme: {
     type: String,
     default: 'auto', // 'light' | 'dark' | 'auto'
-    validator: (value) => ['light', 'dark', 'auto'].includes(value)
+    validator: (value) => ['light', 'dark', 'auto'].includes(value),
   },
   width: {
     type: [String, Number],
-    default: 'auto'
+    default: 'auto',
   },
   height: {
     type: [String, Number],
-    default: 'auto'
+    default: 'auto',
   },
   alt: {
     type: String,
-    default: 'Climb Investimentos'
-  }
+    default: 'Climb Investimentos',
+  },
 })
 
 const systemIsDark = ref(false)
@@ -28,10 +28,11 @@ const htmlClassIsDark = ref(false)
 
 // Verifica se há alguma classe dark no documentElement ou body
 const checkHtmlClass = () => {
-  const isDarkClass = document.documentElement.classList.contains('dark-theme') || 
-                      document.documentElement.classList.contains('dark') ||
-                      document.body.classList.contains('dark-theme') ||
-                      document.body.classList.contains('dark')
+  const isDarkClass =
+    document.documentElement.classList.contains('dark-theme') ||
+    document.documentElement.classList.contains('dark') ||
+    document.body.classList.contains('dark-theme') ||
+    document.body.classList.contains('dark')
   htmlClassIsDark.value = isDarkClass
 }
 
@@ -77,11 +78,13 @@ const resolvedLogo = computed(() => {
   if (props.theme === 'dark') {
     return logoDark
   }
-  
+
   // Se for auto, combina a detecção da classe manual com a preferência do sistema
-  const isLightForced = document.documentElement.classList.contains('light-theme') || document.body.classList.contains('light-theme')
+  const isLightForced =
+    document.documentElement.classList.contains('light-theme') ||
+    document.body.classList.contains('light-theme')
   const isDarkActive = htmlClassIsDark.value || (systemIsDark.value && !isLightForced)
-  
+
   return isDarkActive ? logoDark : logoLight
 })
 
@@ -91,23 +94,20 @@ const resolvedStyle = computed(() => {
     height: typeof props.height === 'number' ? `${props.height}px` : props.height,
     display: 'block',
     maxWidth: '100%',
-    objectFit: 'contain'
+    objectFit: 'contain',
   }
 })
 </script>
 
 <template>
-  <img 
-    :src="resolvedLogo" 
-    :alt="alt" 
-    :style="resolvedStyle" 
-    class="climb-logo" 
-  />
+  <img :src="resolvedLogo" :alt="alt" :style="resolvedStyle" class="climb-logo" />
 </template>
 
 <style scoped>
 .climb-logo {
-  transition: transform 0.3s ease, filter 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    filter 0.3s ease;
 }
 .climb-logo:hover {
   transform: scale(1.02);
