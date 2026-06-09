@@ -3,9 +3,6 @@ import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Button from 'primevue/button'
 import Dropdown from 'primevue/dropdown'
-import InputNumber from 'primevue/inputnumber'
-import InputText from 'primevue/inputtext'
-import Textarea from 'primevue/textarea'
 import ClimbePageWrapper from '@/components/layout/ClimbePageWrapper.vue'
 import { useEmpresasStore } from '@/stores/empresasStore'
 import { usePropostasStore } from '@/stores/propostasStore'
@@ -24,23 +21,13 @@ const propostaOriginal = ref(null)
 
 const formulario = reactive({
   empresaId: null,
-  titulo: '',
-  descricao: '',
-  valorTotal: null,
-  validade: '',
-  status: 'pendente',
 })
-
-const opcoesStatus = [
-  { label: 'Rascunho', value: 'rascunho' },
-  { label: 'Pendente', value: 'pendente' },
-]
 
 const modoEdicao = computed(() => Boolean(route.params.id))
 const tituloPagina = computed(() => (modoEdicao.value ? 'Editar proposta' : 'Nova proposta'))
 const subtituloPagina = computed(() =>
   modoEdicao.value
-    ? 'Atualize os dados da proposta comercial selecionada.'
+    ? 'Atualize a empresa vinculada a esta proposta comercial.'
     : 'Cadastre uma nova proposta comercial para uma empresa contratante.',
 )
 const tituloCard = computed(() =>
@@ -81,30 +68,12 @@ function limparErros() {
 
 function preencherFormulario(proposta) {
   formulario.empresaId = proposta.empresaId
-  formulario.titulo = proposta.titulo
-  formulario.descricao = proposta.descricao || ''
-  formulario.valorTotal = proposta.valorTotal
-  formulario.validade = proposta.validade
-  formulario.status = proposta.status === 'rascunho' ? 'rascunho' : 'pendente'
-}
-
-function obterNomeEmpresaPorId(empresaId) {
-  const empresa = empresasStore.empresas.find((item) => item.id === empresaId)
-  return empresa?.nome_fantasia || ''
 }
 
 function validarFormulario() {
   limparErros()
 
   if (!formulario.empresaId) erros.empresaId = 'Empresa e obrigatoria.'
-  if (!formulario.titulo.trim()) erros.titulo = 'Titulo e obrigatorio.'
-  if (formulario.valorTotal === null || formulario.valorTotal <= 0) {
-    erros.valorTotal = 'Valor total deve ser maior que zero.'
-  }
-  if (!formulario.validade) erros.validade = 'Validade e obrigatoria.'
-  if (!['rascunho', 'pendente'].includes(formulario.status)) {
-    erros.status = 'Status invalido para edicao manual.'
-  }
 
   return Object.keys(erros).length === 0
 }
@@ -131,19 +100,10 @@ async function salvarProposta() {
   try {
     const payload = {
       empresaId: formulario.empresaId,
-      empresaNome: obterNomeEmpresaPorId(formulario.empresaId),
-      titulo: formulario.titulo.trim(),
-      descricao: formulario.descricao.trim(),
-      valorTotal: formulario.valorTotal,
-      validade: formulario.validade,
-      status: formulario.status,
     }
 
     if (modoEdicao.value) {
-      await propostasStore.atualizarProposta(route.params.id, {
-        ...propostaOriginal.value,
-        ...payload,
-      })
+      await propostasStore.atualizarProposta(route.params.id, payload)
     } else {
       await propostasStore.criarProposta(payload)
     }
@@ -221,48 +181,6 @@ onMounted(async () => {
                 placeholder="Selecione a empresa"
               />
               <small v-if="erros.empresaId" class="text-red-400">{{ erros.empresaId }}</small>
-            </div>
-
-            <div class="flex flex-col gap-2">
-              <label for="status">Status</label>
-              <Dropdown
-                id="status"
-                v-model="formulario.status"
-                :options="opcoesStatus"
-                optionLabel="label"
-                optionValue="value"
-                placeholder="Selecione o status"
-              />
-              <small v-if="erros.status" class="text-red-400">{{ erros.status }}</small>
-            </div>
-
-            <div class="flex flex-col gap-2 md:col-span-2">
-              <label for="titulo">Titulo</label>
-              <InputText id="titulo" v-model="formulario.titulo" />
-              <small v-if="erros.titulo" class="text-red-400">{{ erros.titulo }}</small>
-            </div>
-
-            <div class="flex flex-col gap-2 md:col-span-2">
-              <label for="descricao">Descricao</label>
-              <Textarea id="descricao" v-model="formulario.descricao" rows="5" />
-            </div>
-
-            <div class="flex flex-col gap-2">
-              <label for="valor_total">Valor total</label>
-              <InputNumber
-                id="valor_total"
-                v-model="formulario.valorTotal"
-                mode="currency"
-                currency="BRL"
-                locale="pt-BR"
-              />
-              <small v-if="erros.valorTotal" class="text-red-400">{{ erros.valorTotal }}</small>
-            </div>
-
-            <div class="flex flex-col gap-2">
-              <label for="validade">Validade</label>
-              <InputText id="validade" v-model="formulario.validade" type="date" />
-              <small v-if="erros.validade" class="text-red-400">{{ erros.validade }}</small>
             </div>
           </section>
 
