@@ -72,21 +72,15 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
-      path: '/contratos',
-      name: 'contratos',
-      component: () => import('../views/contratos/ContratosListView.vue'),
-      meta: { requiresAuth: true },
-    },
-    {
-      path: '/contratos/:id',
-      name: 'contrato-detalhe',
-      component: () => import('../views/contratos/ContratoDetailView.vue'),
-      meta: { requiresAuth: true },
-    },
-    {
       path: '/documentos',
       name: 'documentos',
       component: () => import('../views/DocumentosView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/agenda',
+      name: 'agenda',
+      component: () => import('../views/AgendaView.vue'),
       meta: { requiresAuth: true },
     },
   ],
@@ -94,7 +88,6 @@ const router = createRouter({
 
 import { useAuthStore } from '@/stores/auth'
 
-// Controle de Acesso (Navigation Guard)
 router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore()
   const hasToken = !!localStorage.getItem('token')
