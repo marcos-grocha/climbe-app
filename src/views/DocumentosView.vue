@@ -58,6 +58,7 @@ onMounted(carregarDocumentos)
 
 <template>
   <ClimbePageWrapper title="Documentos" active-tab="documents">
+    <!-- Cabeçalho -->
     <div class="flex justify-between items-center mb-6">
       <h3 class="text-climbe-text-main font-black text-xl m-0">Documentos</h3>
       <button
@@ -68,6 +69,7 @@ onMounted(carregarDocumentos)
       </button>
     </div>
 
+    <!-- Tabela -->
     <div
       class="bg-climbe-neutral-card border border-climbe-neutral-border rounded-md overflow-hidden"
     >
@@ -130,6 +132,7 @@ onMounted(carregarDocumentos)
       </table>
     </div>
 
+    <!-- Modal Upload -->
     <div
       v-if="mostrarModal"
       class="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
