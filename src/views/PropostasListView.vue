@@ -6,14 +6,15 @@ import Column from 'primevue/column'
 import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
 import Tag from 'primevue/tag'
-import Textarea from 'primevue/textarea'
 import ClimbePageWrapper from '@/components/layout/ClimbePageWrapper.vue'
 import { useAuthStore } from '@/stores/auth'
 import { usePropostasStore } from '@/stores/propostasStore'
+import { useEmpresasStore } from '@/stores/empresasStore'
 
 const router = useRouter()
 const authStore = useAuthStore()
 const propostasStore = usePropostasStore()
+const empresasStore = useEmpresasStore()
 
 const activeTab = ref('propostas')
 const mensagemErro = ref('')
@@ -21,7 +22,6 @@ const mensagemSucesso = ref('')
 const modalAprovacaoVisivel = ref(false)
 const modalRecusaVisivel = ref(false)
 const propostaSelecionada = ref(null)
-const motivoRecusa = ref('')
 const processandoAcao = ref(false)
 
 const tituloPagina = computed(() => 'Propostas')
@@ -51,13 +51,6 @@ function navegarPeloMenu(itemId) {
   router.push('/')
 }
 
-function formatarMoeda(valor) {
-  return new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-  }).format(valor || 0)
-}
-
 function formatarData(data) {
   if (!data) return '-'
 
@@ -68,10 +61,15 @@ function formatarData(data) {
   }).format(new Date(`${data}T00:00:00`))
 }
 
+function obterNomeEmpresa(empresaId) {
+  const empresa = empresasStore.empresas.find((item) => item.id === empresaId)
+  return empresa?.nome_fantasia || 'Empresa desconhecida'
+}
+
 function obterLabelStatus(status) {
   const labels = {
     rascunho: 'Rascunho',
-    pendente: 'Pendente',
+    enviada: 'Enviada',
     aprovada: 'Aprovada',
     recusada: 'Recusada',
   }
@@ -82,7 +80,7 @@ function obterLabelStatus(status) {
 function obterSeverityStatus(status) {
   const severities = {
     rascunho: 'secondary',
-    pendente: 'warning',
+    enviada: 'warning',
     aprovada: 'success',
     recusada: 'danger',
   }
@@ -90,12 +88,12 @@ function obterSeverityStatus(status) {
   return severities[status] || 'secondary'
 }
 
-function podeEditarProposta(proposta) {
-  return proposta.status !== 'aprovada' && proposta.status !== 'recusada'
+function podeEditarOuEnviar(proposta) {
+  return proposta.status === 'rascunho'
 }
 
 function podeGerenciarAprovacao(proposta) {
-  return podeAprovarRecusar.value && proposta.status === 'pendente'
+  return podeAprovarRecusar.value && proposta.status === 'enviada'
 }
 
 function abrirCriacao() {
@@ -104,6 +102,36 @@ function abrirCriacao() {
 
 function abrirEdicao(proposta) {
   router.push(`/propostas/${proposta.id}/editar`)
+}
+
+async function enviarProposta(proposta) {
+  const confirmou = window.confirm(
+    `Deseja enviar a proposta #${proposta.id}? Apos o envio, nao sera mais possivel edita-la.`,
+  )
+  if (!confirmou) return
+
+  mensagemErro.value = ''
+  mensagemSucesso.value = ''
+  try {
+    await propostasStore.enviarProposta(proposta.id)
+    mensagemSucesso.value = 'Proposta enviada com sucesso.'
+  } catch (error) {
+    mensagemErro.value = error?.message || 'Nao foi possivel enviar a proposta.'
+  }
+}
+
+async function confirmarExclusao(proposta) {
+  const confirmou = window.confirm(`Deseja realmente excluir a proposta #${proposta.id}?`)
+  if (!confirmou) return
+
+  mensagemErro.value = ''
+  mensagemSucesso.value = ''
+  try {
+    await propostasStore.excluirProposta(proposta.id)
+    mensagemSucesso.value = 'Proposta excluida com sucesso.'
+  } catch (error) {
+    mensagemErro.value = error?.message || 'Nao foi possivel excluir a proposta.'
+  }
 }
 
 function abrirModalAprovacao(proposta) {
@@ -119,7 +147,6 @@ function fecharModalAprovacao() {
 
 function abrirModalRecusa(proposta) {
   mensagemErro.value = ''
-  motivoRecusa.value = ''
   propostaSelecionada.value = proposta
   modalRecusaVisivel.value = true
 }
@@ -127,7 +154,6 @@ function abrirModalRecusa(proposta) {
 function fecharModalRecusa() {
   modalRecusaVisivel.value = false
   propostaSelecionada.value = null
-  motivoRecusa.value = ''
 }
 
 async function confirmarAprovacao() {
@@ -156,7 +182,7 @@ async function confirmarRecusa() {
   mensagemSucesso.value = ''
 
   try {
-    await propostasStore.recusarProposta(propostaSelecionada.value.id, motivoRecusa.value)
+    await propostasStore.recusarProposta(propostaSelecionada.value.id)
     mensagemSucesso.value = 'Proposta recusada com sucesso.'
     fecharModalRecusa()
   } catch (error) {
@@ -167,10 +193,14 @@ async function confirmarRecusa() {
 }
 
 onMounted(async () => {
+  mensagemErro.value = ''
   try {
+    if (empresasStore.empresas.length === 0) {
+      await empresasStore.carregarEmpresas()
+    }
     await propostasStore.listarPropostas()
   } catch (error) {
-    mensagemErro.value = error?.message || 'Nao foi possivel carregar as propostas.'
+    mensagemErro.value = error?.message || 'Nao foi possivel carregar as propostas e/ou empresas.'
   }
 })
 </script>
@@ -218,7 +248,7 @@ onMounted(async () => {
         <DataTable
           :value="propostasStore.propostas"
           dataKey="id"
-          :loading="propostasStore.carregando"
+          :loading="propostasStore.carregando || empresasStore.carregando"
           stripedRows
           paginator
           :rows="8"
@@ -226,20 +256,19 @@ onMounted(async () => {
           class="propostas-table"
         >
           <template #empty> Nenhuma proposta cadastrada. </template>
-          <Column field="codigo" header="Codigo" />
-          <Column field="empresaNome" header="Empresa" />
-          <Column field="titulo" header="Titulo" />
-          <Column header="Valor">
+          <Column field="id" header="ID">
+            <template #body="{ data }"> #{{ data.id }} </template>
+          </Column>
+          <Column header="Empresa">
             <template #body="{ data }">
-              {{ formatarMoeda(data.valorTotal) }}
+              {{ obterNomeEmpresa(data.empresaId) }}
             </template>
           </Column>
-          <Column header="Validade">
+          <Column header="Data de Criacao">
             <template #body="{ data }">
-              {{ formatarData(data.validade) }}
+              {{ formatarData(data.dataCriacao) }}
             </template>
           </Column>
-          <Column field="criadoPor" header="Responsavel" />
           <Column header="Status">
             <template #body="{ data }">
               <Tag
@@ -253,12 +282,29 @@ onMounted(async () => {
             <template #body="{ data }">
               <div class="flex flex-wrap gap-2">
                 <Button
-                  v-if="podeEditarProposta(data)"
+                  v-if="podeEditarOuEnviar(data)"
                   label="Editar"
                   size="small"
                   text
                   class="acao-editar"
                   @click="abrirEdicao(data)"
+                />
+                <Button
+                  v-if="podeEditarOuEnviar(data)"
+                  label="Enviar"
+                  size="small"
+                  text
+                  class="acao-editar !text-[#b7d4de]"
+                  @click="enviarProposta(data)"
+                />
+                <Button
+                  v-if="podeEditarOuEnviar(data)"
+                  label="Excluir"
+                  size="small"
+                  severity="danger"
+                  text
+                  class="acao-excluir"
+                  @click="confirmarExclusao(data)"
                 />
                 <Button
                   v-if="podeGerenciarAprovacao(data)"
@@ -296,9 +342,9 @@ onMounted(async () => {
           para o fluxo de contrato.
         </p>
         <div class="rounded-sm border border-[#5fc2ba24] bg-[#141f21] px-4 py-3 text-sm text-white">
-          <strong>{{ propostaSelecionada?.codigo }}</strong>
+          <strong>#{{ propostaSelecionada?.id }}</strong>
           <span class="mx-2 text-climbe-text-muted">-</span>
-          <span>{{ propostaSelecionada?.titulo }}</span>
+          <span>{{ obterNomeEmpresa(propostaSelecionada?.empresaId) }}</span>
         </div>
       </div>
 
@@ -325,16 +371,10 @@ onMounted(async () => {
           Tem certeza que deseja recusar esta proposta? Essa acao alterara o status da proposta para
           recusada.
         </p>
-        <div class="flex flex-col gap-2">
-          <label for="motivo_recusa" class="text-sm font-semibold text-white"
-            >Motivo da recusa</label
-          >
-          <Textarea
-            id="motivo_recusa"
-            v-model="motivoRecusa"
-            rows="4"
-            placeholder="Informe um motivo, se necessario."
-          />
+        <div class="rounded-sm border border-[#5fc2ba24] bg-[#141f21] px-4 py-3 text-sm text-white">
+          <strong>#{{ propostaSelecionada?.id }}</strong>
+          <span class="mx-2 text-climbe-text-muted">-</span>
+          <span>{{ obterNomeEmpresa(propostaSelecionada?.empresaId) }}</span>
         </div>
       </div>
 

@@ -4,6 +4,8 @@ import {
   buscarPropostaPorId as buscarPropostaPorIdService,
   criarProposta as criarPropostaService,
   atualizarProposta as atualizarPropostaService,
+  excluirProposta as excluirPropostaService,
+  enviarProposta as enviarPropostaService,
   aprovarProposta as aprovarPropostaService,
   recusarProposta as recusarPropostaService,
 } from '@/services/propostasService'
@@ -39,6 +41,17 @@ export const usePropostasStore = defineStore('propostas', {
       )
       return propostaAtualizada
     },
+    async excluirProposta(id) {
+      await excluirPropostaService(id)
+      this.propostas = this.propostas.filter((proposta) => proposta.id !== Number(id))
+    },
+    async enviarProposta(id) {
+      const propostaAtualizada = await enviarPropostaService(id)
+      this.propostas = this.propostas.map((proposta) =>
+        proposta.id === Number(id) ? propostaAtualizada : proposta,
+      )
+      return propostaAtualizada
+    },
     async aprovarProposta(id) {
       const propostaAtualizada = await aprovarPropostaService(id)
       this.propostas = this.propostas.map((proposta) =>
@@ -46,8 +59,8 @@ export const usePropostasStore = defineStore('propostas', {
       )
       return propostaAtualizada
     },
-    async recusarProposta(id, motivoRecusa) {
-      const propostaAtualizada = await recusarPropostaService(id, motivoRecusa)
+    async recusarProposta(id) {
+      const propostaAtualizada = await recusarPropostaService(id)
       this.propostas = this.propostas.map((proposta) =>
         proposta.id === Number(id) ? propostaAtualizada : proposta,
       )
