@@ -4,6 +4,7 @@ import {
   criarEmpresa as criarEmpresaService,
   atualizarEmpresa as atualizarEmpresaService,
   excluirEmpresa as excluirEmpresaService,
+  obterEmpresa as obterEmpresaService,
 } from '@/services/empresasService'
 
 export const useEmpresasStore = defineStore('empresas', {
@@ -18,6 +19,15 @@ export const useEmpresasStore = defineStore('empresas', {
         const dados = await listarEmpresas()
         this.empresas = dados
         return dados
+      } finally {
+        this.carregando = false
+      }
+    },
+    async buscarEmpresaPorId(id) {
+      this.carregando = true
+      try {
+        const empresa = await obterEmpresaService(id)
+        return empresa
       } finally {
         this.carregando = false
       }
