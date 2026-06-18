@@ -14,20 +14,10 @@ export const useAuthStore = defineStore('auth', () => {
     loading.value = true
     error.value = null
     try {
-      const params = new URLSearchParams()
-      params.append('username', email)
-      params.append('password', senha)
-
-      const { data } = await http.post('/auth/login', params, {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-      })
-
-      token.value = data.access_token
-      localStorage.setItem('token', data.access_token)
-
-      await fetchMe()
+      // MOCK: login sem backend
+      token.value = 'mock-jwt-token'
+      localStorage.setItem('token', 'mock-jwt-token')
+      user.value = { nome_completo: 'Admin Climbe', email: email, perfil: 'admin' }
     } catch (err) {
       error.value = err
       throw err
@@ -37,8 +27,8 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   async function fetchMe() {
-    const { data } = await http.get('/auth/me')
-    user.value = data
+    // MOCK: retorna usuário fake sem chamar o backend
+    user.value = { nome_completo: 'Admin Climbe', email: 'admin@climbe.com', perfil: 'admin' }
   }
 
   async function restoreSession() {

@@ -13,12 +13,8 @@
     "format": "prettier --write --experimental-cli src/"
   },
   "dependencies": {
- feature/tela
     "@primevue/themes": "^4.5.4",
     "axios": "^1.16.1",
-    "@primevue/themes": "^4.5.4",
-    "axios": "^1.16.1",
-    main
     "pinia": "^3.0.4",
     "primeicons": "^7.0.0",
     "primevue": "^4.5.5",
