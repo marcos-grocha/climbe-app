@@ -42,9 +42,7 @@ const formulario = reactive({
 
 const modoEdicao = computed(() => Boolean(route.params.id))
 
-const tituloPagina = computed(() =>
-  modoEdicao.value ? 'Editar reunião' : 'Agendar reunião',
-)
+const tituloPagina = computed(() => (modoEdicao.value ? 'Editar reunião' : 'Agendar reunião'))
 
 const subtituloPagina = computed(() =>
   modoEdicao.value
@@ -83,9 +81,7 @@ const opcoesParticipantes = computed(() =>
   })),
 )
 
-const salaAtual = computed(() =>
-  reunioesStore.salas.find((s) => s.id === formulario.salaId),
-)
+const salaAtual = computed(() => reunioesStore.salas.find((s) => s.id === formulario.salaId))
 
 const dataHoraMinima = computed(() => {
   const agora = new Date()
@@ -336,9 +332,7 @@ onMounted(async () => {
         <form v-else class="grid grid-cols-1 gap-6" @submit.prevent="salvarReuniao">
           <!-- Seção: Informações gerais -->
           <section class="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <h3
-              class="m-0 text-lg font-semibold text-[#d7eef3] md:col-span-2"
-            >
+            <h3 class="m-0 text-lg font-semibold text-[#d7eef3] md:col-span-2">
               Informações gerais
             </h3>
 
@@ -380,11 +374,7 @@ onMounted(async () => {
 
           <!-- Seção: Modalidade -->
           <section class="grid grid-cols-1 gap-4">
-            <h3
-              class="m-0 text-lg font-semibold text-[#d7eef3]"
-            >
-              Modalidade
-            </h3>
+            <h3 class="m-0 text-lg font-semibold text-[#d7eef3]">Modalidade</h3>
 
             <div class="flex flex-wrap gap-6">
               <div class="flex items-center gap-3">
@@ -393,7 +383,10 @@ onMounted(async () => {
                   inputId="modalidade_presencial"
                   value="presencial"
                 />
-                <label for="modalidade_presencial" class="flex items-center gap-2 text-sm text-white cursor-pointer">
+                <label
+                  for="modalidade_presencial"
+                  class="flex items-center gap-2 text-sm text-white cursor-pointer"
+                >
                   <span class="text-base">🏢</span> Presencial
                 </label>
               </div>
@@ -403,7 +396,10 @@ onMounted(async () => {
                   inputId="modalidade_online"
                   value="online"
                 />
-                <label for="modalidade_online" class="flex items-center gap-2 text-sm text-white cursor-pointer">
+                <label
+                  for="modalidade_online"
+                  class="flex items-center gap-2 text-sm text-white cursor-pointer"
+                >
                   <span class="text-base">💻</span> Online
                 </label>
               </div>
@@ -412,11 +408,7 @@ onMounted(async () => {
 
           <!-- Seção: Local (presencial) -->
           <section v-if="ehPresencial" class="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <h3
-              class="m-0 text-lg font-semibold text-[#d7eef3] md:col-span-2"
-            >
-              Local da reunião
-            </h3>
+            <h3 class="m-0 text-lg font-semibold text-[#d7eef3] md:col-span-2">Local da reunião</h3>
 
             <div class="flex flex-col gap-2 md:col-span-2">
               <label for="sala_id" class="text-sm font-semibold text-white">Sala</label>
@@ -478,10 +470,7 @@ onMounted(async () => {
               </div>
 
               <!-- Sala com conflito -->
-              <div
-                v-else
-                class="rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3"
-              >
+              <div v-else class="rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3">
                 <div class="mb-2 flex items-center gap-2 text-sm font-semibold text-amber-200">
                   <i class="pi pi-exclamation-triangle"></i>
                   Sala indisponível — conflito de horário
@@ -503,11 +492,7 @@ onMounted(async () => {
 
           <!-- Seção: Link online -->
           <section v-if="!ehPresencial" class="grid grid-cols-1 gap-4">
-            <h3
-              class="m-0 text-lg font-semibold text-[#d7eef3]"
-            >
-              Dados da reunião online
-            </h3>
+            <h3 class="m-0 text-lg font-semibold text-[#d7eef3]">Dados da reunião online</h3>
 
             <div class="flex flex-col gap-2">
               <label for="link_online" class="text-sm font-semibold text-white"
@@ -524,11 +509,7 @@ onMounted(async () => {
 
           <!-- Seção: Participantes -->
           <section class="grid grid-cols-1 gap-4">
-            <h3
-              class="m-0 text-lg font-semibold text-[#d7eef3]"
-            >
-              Participantes
-            </h3>
+            <h3 class="m-0 text-lg font-semibold text-[#d7eef3]">Participantes</h3>
 
             <div class="flex flex-col gap-2">
               <label for="participantes" class="text-sm font-semibold text-white"
@@ -554,11 +535,7 @@ onMounted(async () => {
 
           <!-- Seção: Observações -->
           <section class="grid grid-cols-1 gap-4">
-            <h3
-              class="m-0 text-lg font-semibold text-[#d7eef3]"
-            >
-              Observações
-            </h3>
+            <h3 class="m-0 text-lg font-semibold text-[#d7eef3]">Observações</h3>
 
             <div class="flex flex-col gap-2">
               <label for="observacoes" class="text-sm font-semibold text-white"

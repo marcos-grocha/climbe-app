@@ -30,7 +30,6 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
-      feature/formulario-de-agendamento
       path: '/empresas/nova',
       name: 'empresa-nova',
       component: () => import('@/views/EmpresaFormView.vue'),
@@ -43,7 +42,6 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
-      main
       path: '/contratos',
       name: 'contratos',
       component: () => import('../views/contratos/ContratosListView.vue'),

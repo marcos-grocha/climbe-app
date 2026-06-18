@@ -31,11 +31,36 @@ export const salasMock = [
 
 export const participantesMock = [
   { id: 1, nome: 'Mariana Lopes', email: 'mariana.lopes@climbe.com', cargo: 'Diretora Executiva' },
-  { id: 2, nome: 'Ricardo Mendes', email: 'ricardo.mendes@nortecapital.com.br', cargo: 'Sócio Administrador' },
-  { id: 3, nome: 'Ana Carolina Silva', email: 'ana.silva@climbe.com', cargo: 'Gerente de Projetos' },
-  { id: 4, nome: 'Pedro Henrique Costa', email: 'pedro.costa@climbe.com', cargo: 'Analista Financeiro' },
-  { id: 5, nome: 'Juliana Ferreira', email: 'juliana.ferreira@climbe.com', cargo: 'Coordenadora Jurídica' },
-  { id: 6, nome: 'Carlos Eduardo Almeida', email: 'carlos.almeida@climbe.com', cargo: 'Diretor Comercial' },
+  {
+    id: 2,
+    nome: 'Ricardo Mendes',
+    email: 'ricardo.mendes@nortecapital.com.br',
+    cargo: 'Sócio Administrador',
+  },
+  {
+    id: 3,
+    nome: 'Ana Carolina Silva',
+    email: 'ana.silva@climbe.com',
+    cargo: 'Gerente de Projetos',
+  },
+  {
+    id: 4,
+    nome: 'Pedro Henrique Costa',
+    email: 'pedro.costa@climbe.com',
+    cargo: 'Analista Financeiro',
+  },
+  {
+    id: 5,
+    nome: 'Juliana Ferreira',
+    email: 'juliana.ferreira@climbe.com',
+    cargo: 'Coordenadora Jurídica',
+  },
+  {
+    id: 6,
+    nome: 'Carlos Eduardo Almeida',
+    email: 'carlos.almeida@climbe.com',
+    cargo: 'Diretor Comercial',
+  },
 ]
 
 export const reunioesMock = [
