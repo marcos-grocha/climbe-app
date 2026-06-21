@@ -10,7 +10,6 @@ const modalAberto = ref(false)
 const eventoSelecionado = ref(null)
 const novoEvento = ref({ titulo: '', data: '', tipo: 'reuniao' })
 const mostrarFormulario = ref(false)
-const calendarRef = ref(null)
 
 const eventos = ref([
   {
@@ -107,27 +106,44 @@ const adicionarEvento = () => {
         <span class="flex items-center gap-1 text-xs text-climbe-text-muted">
           <span class="w-3 h-3 rounded-full bg-[#f59e0b] inline-block"></span> Vencimento
         </span>
-        <button
-          class="bg-climbe-primary text-[#121312] font-heavy px-4 py-2 rounded-sm text-sm hover:bg-climbe-primary-hover transition-colors"
-          @click="mostrarFormulario = true"
-        >
-          + Agendar
-        </button>
       </div>
     </div>
 
     <!-- Layout com sidebar + calendário -->
     <div class="flex gap-6">
       <!-- Sidebar -->
-      <div class="w-64 shrink-0">
+      <div class="w-64 shrink-0 flex flex-col gap-4">
+        <button
+          class="bg-climbe-primary text-[#121312] font-heavy px-4 py-3 rounded-full text-sm hover:bg-climbe-primary-hover transition-colors flex items-center gap-2 w-fit shadow-lg"
+          @click="mostrarFormulario = true"
+        >
+          <span class="text-lg leading-none">+</span> Criar
+        </button>
+
         <MiniCalendario />
+
+        <div class="bg-climbe-neutral-card border border-climbe-neutral-border rounded-xl p-4">
+          <span class="text-climbe-text-main text-xs font-heavy uppercase tracking-wide block mb-3"
+            >Minhas agendas</span
+          >
+          <div class="flex flex-col gap-2">
+            <label class="flex items-center gap-2 text-sm text-climbe-text-muted cursor-pointer">
+              <input type="checkbox" checked class="accent-[#5fc2ba] w-4 h-4 rounded" />
+              Reuniões
+            </label>
+            <label class="flex items-center gap-2 text-sm text-climbe-text-muted cursor-pointer">
+              <input type="checkbox" checked class="accent-[#f59e0b] w-4 h-4 rounded" />
+              Vencimentos
+            </label>
+          </div>
+        </div>
       </div>
 
       <!-- Calendário principal -->
       <div
         class="flex-1 bg-climbe-neutral-card border border-climbe-neutral-border rounded-2xl p-6 google-calendar"
       >
-        <FullCalendar ref="calendarRef" :options="calendarOptions" />
+        <FullCalendar :options="calendarOptions" />
       </div>
     </div>
 
