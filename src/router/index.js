@@ -119,6 +119,9 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: '/agenda',
+      name: 'agenda',
+      component: () => import('../views/AgendaView.vue'),
       path: '/usuarios',
       name: 'usuarios',
       component: () => import('@/views/UsuariosListView.vue'),
@@ -129,7 +132,6 @@ const router = createRouter({
 
 import { useAuthStore } from '@/stores/auth'
 
-// Controle de Acesso (Navigation Guard)
 router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore()
   const hasToken = !!localStorage.getItem('token')

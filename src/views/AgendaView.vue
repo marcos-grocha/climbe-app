@@ -119,6 +119,31 @@ const adicionarEvento = () => {
     <!-- Layout com sidebar + calendário -->
     <div class="flex gap-6">
       <!-- Sidebar -->
+      <div class="w-64 shrink-0 flex flex-col gap-4">
+        <button
+          class="bg-climbe-primary text-[#121312] font-heavy px-4 py-3 rounded-full text-sm hover:bg-climbe-primary-hover transition-colors flex items-center gap-2 w-fit shadow-lg"
+          @click="mostrarFormulario = true"
+        >
+          <span class="text-lg leading-none">+</span> Criar
+        </button>
+
+        <MiniCalendario />
+
+        <div class="bg-climbe-neutral-card border border-climbe-neutral-border rounded-xl p-4">
+          <span class="text-climbe-text-main text-xs font-heavy uppercase tracking-wide block mb-3"
+            >Minhas agendas</span
+          >
+          <div class="flex flex-col gap-2">
+            <label class="flex items-center gap-2 text-sm text-climbe-text-muted cursor-pointer">
+              <input type="checkbox" checked class="accent-[#5fc2ba] w-4 h-4 rounded" />
+              Reuniões
+            </label>
+            <label class="flex items-center gap-2 text-sm text-climbe-text-muted cursor-pointer">
+              <input type="checkbox" checked class="accent-[#f59e0b] w-4 h-4 rounded" />
+              Vencimentos
+            </label>
+          </div>
+        </div>
       <div class="w-64 shrink-0">
         <MiniCalendario />
       </div>
@@ -127,6 +152,7 @@ const adicionarEvento = () => {
       <div
         class="flex-1 bg-climbe-neutral-card border border-climbe-neutral-border rounded-2xl p-6 google-calendar"
       >
+        <FullCalendar :options="calendarOptions" />
         <FullCalendar ref="calendarRef" :options="calendarOptions" />
       </div>
     </div>
