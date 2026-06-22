@@ -4,130 +4,59 @@ import { useRouter } from 'vue-router'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Button from 'primevue/button'
-import Dialog from 'primevue/dialog'
-import InputText from 'primevue/inputtext'
 import Tag from 'primevue/tag'
 import ClimbePageWrapper from '@/components/layout/ClimbePageWrapper.vue'
 import { useUsuariosStore } from '@/stores/usuariosStore'
+import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
 const usuariosStore = useUsuariosStore()
+const authStore = useAuthStore()
 
 const activeTab = ref('users')
-const dialogVisivel = ref(false)
-const modoEdicaoId = ref(null)
-const salvando = ref(false)
 const mensagemErro = ref('')
 const mensagemSucesso = ref('')
-const filtroNome = ref('')
-const filtroPerfil = ref('')
-const filtroStatus = ref('')
-
-const formulario = reactive({
-  nome_completo: '',
-  email: '',
-  cargo: '',
-  perfil: 'usuario',
-})
-
-const erros = reactive({})
-
-const tituloDialog = computed(() => (modoEdicaoId.value ? 'Editar usuário' : 'Novo usuário'))
+const filtroPapel = ref('')
+const filtroSituacao = ref('')
 
 const usuariosFiltrados = computed(() => {
   return usuariosStore.usuarios.filter((u) => {
-    const matchNome = !filtroNome.value || u.nome_completo.toLowerCase().includes(filtroNome.value.toLowerCase())
-    const matchPerfil = !filtroPerfil.value || u.perfil === filtroPerfil.value
-    const matchStatus = !filtroStatus.value || u.status === filtroStatus.value
-    return matchNome && matchPerfil && matchStatus
+    const matchPapel = !filtroPapel.value || u.papel === filtroPapel.value
+    const matchSituacao = !filtroSituacao.value || u.situacao === filtroSituacao.value
+    return matchPapel && matchSituacao
   })
 })
 
-function limparErros() {
-  Object.keys(erros).forEach((k) => delete erros[k])
-}
-
-function validarFormulario() {
-  limparErros()
-  if (!formulario.nome_completo.trim()) erros.nome_completo = 'Nome é obrigatório.'
-  if (!formulario.email.trim()) {
-    erros.email = 'E-mail é obrigatório.'
-  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formulario.email)) {
-    erros.email = 'E-mail inválido.'
-  }
-  if (!formulario.cargo.trim()) erros.cargo = 'Cargo é obrigatório.'
-  return Object.keys(erros).length === 0
-}
+// Funções de form migradas para UsuarioFormView
 
 function abrirCriacao() {
-  modoEdicaoId.value = null
-  mensagemErro.value = ''
-  mensagemSucesso.value = ''
-  limparErros()
-  formulario.nome_completo = ''
-  formulario.email = ''
-  formulario.cargo = ''
-  formulario.perfil = 'usuario'
-  dialogVisivel.value = true
+  router.push('/usuarios/novo')
 }
 
 function abrirEdicao(usuario) {
-  modoEdicaoId.value = usuario.id
-  mensagemErro.value = ''
-  mensagemSucesso.value = ''
-  limparErros()
-  formulario.nome_completo = usuario.nome_completo
-  formulario.email = usuario.email
-  formulario.cargo = usuario.cargo
-  formulario.perfil = usuario.perfil
-  dialogVisivel.value = true
-}
-
-async function salvarUsuario() {
-  if (!validarFormulario()) return
-  salvando.value = true
-  try {
-    if (modoEdicaoId.value) {
-      await usuariosStore.atualizarUsuario(modoEdicaoId.value, { ...formulario })
-      mensagemSucesso.value = 'Usuário atualizado com sucesso.'
-    } else {
-      await usuariosStore.criarUsuario({ ...formulario })
-      mensagemSucesso.value = 'Usuário criado com sucesso.'
-    }
-    dialogVisivel.value = false
-  } catch {
-    mensagemErro.value = 'Não foi possível salvar o usuário.'
-  } finally {
-    salvando.value = false
-  }
+  router.push(`/usuarios/${usuario.id}/editar`)
 }
 
 async function alternarStatus(usuario) {
+  if (usuario.id === authStore.user?.id_usuario) {
+    mensagemErro.value = 'Você não pode inativar a própria conta.'
+    return
+  }
   try {
+    const isAtivando = usuario.situacao === 'inativo'
     await usuariosStore.toggleStatus(usuario.id)
-    mensagemSucesso.value = `Usuário ${usuario.status === 'ativo' ? 'desativado' : 'ativado'} com sucesso.`
+    mensagemSucesso.value = `Usuário ${isAtivando ? 'reativado' : 'inativado'} com sucesso.`
     setTimeout(() => { mensagemSucesso.value = '' }, 3000)
-  } catch {
-    mensagemErro.value = 'Erro ao alterar o status do usuário.'
+  } catch (err) {
+    mensagemErro.value = err.message || 'Erro ao alterar o status do usuário.'
   }
 }
 
-async function confirmarExclusao(usuario) {
-  const confirmou = window.confirm(`Deseja realmente excluir "${usuario.nome_completo}"?`)
-  if (!confirmou) return
-  try {
-    await usuariosStore.excluirUsuario(usuario.id)
-    mensagemSucesso.value = 'Usuário excluído com sucesso.'
-    setTimeout(() => { mensagemSucesso.value = '' }, 3000)
-  } catch {
-    mensagemErro.value = 'Erro ao excluir o usuário.'
-  }
-}
+// Exclusão removida, status agora faz inativação
 
 function limparFiltros() {
-  filtroNome.value = ''
-  filtroPerfil.value = ''
-  filtroStatus.value = ''
+  filtroPapel.value = ''
+  filtroSituacao.value = ''
 }
 
 function navegarPeloMenu(itemId) {
@@ -146,9 +75,9 @@ function navegarPeloMenu(itemId) {
 
 onMounted(async () => {
   try {
-    await usuariosStore.carregarUsuarios()
-  } catch {
-    mensagemErro.value = 'Não foi possível carregar os usuários.'
+    await usuariosStore.carregarDados()
+  } catch (err) {
+    mensagemErro.value = err.message || 'Não foi possível carregar os usuários.'
   }
 })
 </script>
@@ -183,8 +112,8 @@ onMounted(async () => {
         <div class="metric-card">
           <div class="metric-icon">👤</div>
           <div>
-            <p class="metric-label">Usuários Comuns</p>
-            <p class="metric-value">{{ usuariosStore.totalUsuarios }}</p>
+            <p class="metric-label">Analistas</p>
+            <p class="metric-value">{{ usuariosStore.totalAnalistas }}</p>
           </div>
         </div>
         <div class="metric-card">
@@ -206,22 +135,18 @@ onMounted(async () => {
 
       <!-- Filtros -->
       <section class="rounded-xl border border-[#5fc2ba42] bg-[#101718] p-5 shadow-[0_8px_30px_rgba(0,0,0,0.25)]">
-        <div class="mb-4 grid grid-cols-1 gap-4 md:grid-cols-3">
-          <div class="flex flex-col gap-1">
-            <label class="text-xs font-semibold uppercase tracking-wider text-[#b7d4de]">Nome</label>
-            <InputText v-model="filtroNome" placeholder="Buscar por nome..." class="filter-input" />
-          </div>
+        <div class="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2">
           <div class="flex flex-col gap-1">
             <label class="text-xs font-semibold uppercase tracking-wider text-[#b7d4de]">Perfil</label>
-            <select v-model="filtroPerfil" class="filter-select">
-              <option value="">Todos os perfis</option>
+            <select v-model="filtroPapel" class="filter-select">
+              <option value="">Todos os papéis</option>
               <option value="admin">Administrador</option>
-              <option value="usuario">Usuário</option>
+              <option value="analista">Analista</option>
             </select>
           </div>
           <div class="flex flex-col gap-1">
             <label class="text-xs font-semibold uppercase tracking-wider text-[#b7d4de]">Status</label>
-            <select v-model="filtroStatus" class="filter-select">
+            <select v-model="filtroSituacao" class="filter-select">
               <option value="">Todos os status</option>
               <option value="ativo">Ativo</option>
               <option value="inativo">Inativo</option>
@@ -269,13 +194,23 @@ onMounted(async () => {
             </template>
           </Column>
 
-          <Column field="cargo" header="Cargo" />
+          <Column header="Cargo">
+            <template #body="{ data }">
+              {{ usuariosStore.getNomeCargo(data.cargo_id) }}
+            </template>
+          </Column>
 
           <!-- Perfil -->
           <Column header="Perfil">
             <template #body="{ data }">
-              <span :class="data.perfil === 'admin' ? 'badge-admin' : 'badge-user'">
-                {{ data.perfil === 'admin' ? '👑 Admin' : '👤 Usuário' }}
+              <span v-if="data.papel === 'admin'" class="badge-admin">
+                ADMINISTRADOR
+              </span>
+              <span v-else-if="data.papel === 'analista'" class="badge-user">
+                ANALISTA
+              </span>
+              <span v-else class="rounded-full bg-gray-500/20 px-2 py-1 text-[0.7rem] uppercase font-bold text-gray-400 border border-gray-500/30">
+                Papel não suportado
               </span>
             </template>
           </Column>
@@ -284,14 +219,14 @@ onMounted(async () => {
           <Column header="Status">
             <template #body="{ data }">
               <Tag
-                :value="data.status === 'ativo' ? 'Ativo' : 'Inativo'"
-                :severity="data.status === 'ativo' ? 'success' : 'secondary'"
+                :value="data.situacao === 'ativo' ? 'Ativo' : 'Inativo'"
+                :severity="data.situacao === 'ativo' ? 'success' : 'secondary'"
                 class="status-pill"
               />
             </template>
           </Column>
 
-          <Column field="ultimo_acesso" header="Último acesso" />
+          <Column field="contato" header="Contato" />
 
           <!-- Ações -->
           <Column header="Ações" style="min-width: 180px">
@@ -306,21 +241,13 @@ onMounted(async () => {
                   @click="abrirEdicao(data)"
                 />
                 <Button
-                  :icon="data.status === 'ativo' ? 'pi pi-ban' : 'pi pi-check-circle'"
+                  :icon="data.situacao === 'ativo' ? 'pi pi-ban' : 'pi pi-check-circle'"
                   size="small"
                   text
-                  :title="data.status === 'ativo' ? 'Desativar' : 'Ativar'"
-                  :class="data.status === 'ativo' ? 'acao-toggle-off' : 'acao-toggle-on'"
+                  :title="data.situacao === 'ativo' ? 'Inativar usuário' : 'Reativar usuário'"
+                  :class="data.situacao === 'ativo' ? 'acao-toggle-off' : 'acao-toggle-on'"
+                  :disabled="data.id === authStore.user?.id_usuario"
                   @click="alternarStatus(data)"
-                />
-                <Button
-                  icon="pi pi-trash"
-                  size="small"
-                  severity="danger"
-                  text
-                  title="Excluir"
-                  class="acao-excluir"
-                  @click="confirmarExclusao(data)"
                 />
               </div>
             </template>
@@ -329,67 +256,6 @@ onMounted(async () => {
       </section>
     </div>
 
-    <!-- Dialog: Criar / Editar -->
-    <Dialog
-      v-model:visible="dialogVisivel"
-      modal
-      :header="tituloDialog"
-      :style="{ width: '36rem', maxWidth: '95vw' }"
-    >
-      <div class="flex flex-col gap-5 pt-2">
-        <div class="flex flex-col gap-1">
-          <label class="field-label">Nome completo</label>
-          <InputText id="nome_completo" v-model="formulario.nome_completo" placeholder="Ex: João da Silva" />
-          <small v-if="erros.nome_completo" class="text-red-400">{{ erros.nome_completo }}</small>
-        </div>
-
-        <div class="flex flex-col gap-1">
-          <label class="field-label">E-mail</label>
-          <InputText id="email_usuario" v-model="formulario.email" type="email" placeholder="Ex: joao@climbe.com" />
-          <small v-if="erros.email" class="text-red-400">{{ erros.email }}</small>
-        </div>
-
-        <div class="flex flex-col gap-1">
-          <label class="field-label">Cargo</label>
-          <InputText id="cargo_usuario" v-model="formulario.cargo" placeholder="Ex: Analista Financeiro" />
-          <small v-if="erros.cargo" class="text-red-400">{{ erros.cargo }}</small>
-        </div>
-
-        <div class="flex flex-col gap-1">
-          <label class="field-label">Perfil de acesso</label>
-          <div class="flex gap-3">
-            <label class="perfil-option" :class="{ 'perfil-option--selected': formulario.perfil === 'usuario' }">
-              <input type="radio" v-model="formulario.perfil" value="usuario" class="sr-only" />
-              <span class="text-lg">👤</span>
-              <div>
-                <p class="text-sm font-bold">Usuário</p>
-                <p class="text-xs text-[#7ba8b4]">Acesso padrão à plataforma</p>
-              </div>
-            </label>
-            <label class="perfil-option" :class="{ 'perfil-option--selected': formulario.perfil === 'admin' }">
-              <input type="radio" v-model="formulario.perfil" value="admin" class="sr-only" />
-              <span class="text-lg">👑</span>
-              <div>
-                <p class="text-sm font-bold">Administrador</p>
-                <p class="text-xs text-[#7ba8b4]">Acesso total ao sistema</p>
-              </div>
-            </label>
-          </div>
-        </div>
-      </div>
-
-      <template #footer>
-        <div class="flex items-center justify-end gap-2 pt-2">
-          <Button label="Cancelar" text @click="dialogVisivel = false" />
-          <Button
-            :label="modoEdicaoId ? 'Salvar alterações' : 'Criar usuário'"
-            :loading="salvando"
-            class="!bg-[#67cec7] !text-[#0f1618] !font-bold !border-0 hover:!bg-[#7ad8d2]"
-            @click="salvarUsuario"
-          />
-        </div>
-      </template>
-    </Dialog>
   </ClimbePageWrapper>
 </template>
 
@@ -485,32 +351,7 @@ onMounted(async () => {
   color: #eef8fb !important;
 }
 
-.field-label {
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: #b7d4de;
-}
 
-.perfil-option {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.9rem 1rem;
-  border-radius: 8px;
-  border: 1.5px solid rgba(95, 194, 186, 0.2);
-  background: #182225;
-  cursor: pointer;
-  transition: all 0.2s;
-  color: #eef8fb;
-}
-.perfil-option:hover {
-  border-color: rgba(95, 194, 186, 0.5);
-}
-.perfil-option--selected {
-  border-color: #5fc2ba;
-  background: rgba(95, 194, 186, 0.1);
-}
 
 /* DataTable overrides */
 :deep(.usuarios-table.p-datatable) {
