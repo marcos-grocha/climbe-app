@@ -10,13 +10,13 @@ const emit = defineEmits(['toggle', 'navigate'])
 const router = useRouter()
 
 const menuItems = [
-  { id: 'dashboard', label: 'Painel Geral', icon: '📊' },
-  { id: 'contracts', label: 'Gestao de Contratos', icon: '📄' },
+  { id: 'dashboard', label: 'Painel Geral', icon: '📊', path: '/' },
+  { id: 'contracts', label: 'Gestao de Contratos', icon: '📄', path: '/' },
   { id: 'propostas', label: 'Propostas', icon: '🧾', path: '/propostas' },
   { id: 'empresas', label: 'Empresas & Clientes', icon: '🏢', path: '/empresas' },
-  { id: 'users', label: 'Gestao de Usuarios', icon: '👥' },
+  { id: 'users', label: 'Gestao de Usuarios', icon: '👥', path: '/usuarios' },
   { id: 'meetings', label: 'Reunioes & Atas', icon: '🗓' },
-  { id: 'documents', label: 'Documentos', icon: '📁' },
+  { id: 'documents', label: 'Documentos', icon: '📁', path: '/documentos' },
   { id: 'reports', label: 'Relatorios', icon: '📈' },
   { id: 'settings', label: 'Configuracoes', icon: '⚙️' },
 ]
