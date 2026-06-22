@@ -7,6 +7,7 @@ import ClimbeButton from '@/components/ui/ClimbeButton.vue'
 import ClimbeInput from '@/components/ui/ClimbeInput.vue'
 import ClimbeBadge from '@/components/ui/ClimbeBadge.vue'
 import ClimbeTable from '@/components/ui/ClimbeTable.vue'
+import WidgetAgendaSemana from '@/components/widgets/WidgetAgendaSemana.vue'
 
 const router = useRouter()
 const activeTab = ref('dashboard')
@@ -226,45 +227,56 @@ const deletarContrato = (id) => {
         </ClimbeCard>
       </div>
 
-      <div class="flex flex-col gap-4">
-        <ClimbeCard variant="solid" padding="lg">
-          <template #header>
-            <div class="flex justify-between items-center w-full">
-              <h3 class="text-[1.1rem] m-0 font-heavy">Contratos Recentes</h3>
-              <ClimbeButton variant="ghost" @click="activeTab = 'contracts'">
-                Ver Todos &rarr;
-              </ClimbeButton>
-            </div>
-          </template>
-
-          <ClimbeTable :headers="tableHeaders" :items="todosContratos.slice(0, 3)" :loading="false">
-            <template #cell-valor="{ item }">
-              <span class="font-heavy text-climbe-text-main">{{ formatCurrency(item.valor) }}</span>
-            </template>
-
-            <template #cell-status="{ item }">
-              <ClimbeBadge v-if="item.status === 'active'" variant="primary">Vigente</ClimbeBadge>
-              <ClimbeBadge v-else-if="item.status === 'approved'" variant="success"
-                >Aprovado</ClimbeBadge
-              >
-              <ClimbeBadge v-else-if="item.status === 'pending'" variant="warning"
-                >Em Análise</ClimbeBadge
-              >
-              <ClimbeBadge v-else variant="danger">Cancelado</ClimbeBadge>
-            </template>
-
-            <template #cell-actions="{ item }">
-              <div class="flex gap-2">
-                <ClimbeButton
-                  variant="ghost"
-                  class="!px-3 !py-1 !text-[0.8rem]"
-                  @click="alert(`Detalhes do contrato #${item.id}`)"
-                  >Ver</ClimbeButton
-                >
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div class="lg:col-span-2 flex flex-col gap-4">
+          <ClimbeCard variant="solid" padding="lg" class="h-full">
+            <template #header>
+              <div class="flex justify-between items-center w-full">
+                <h3 class="text-[1.1rem] m-0 font-heavy">Contratos Recentes</h3>
+                <ClimbeButton variant="ghost" @click="activeTab = 'contracts'">
+                  Ver Todos &rarr;
+                </ClimbeButton>
               </div>
             </template>
-          </ClimbeTable>
-        </ClimbeCard>
+
+            <ClimbeTable
+              :headers="tableHeaders"
+              :items="todosContratos.slice(0, 3)"
+              :loading="false"
+            >
+              <template #cell-valor="{ item }">
+                <span class="font-heavy text-climbe-text-main">{{
+                  formatCurrency(item.valor)
+                }}</span>
+              </template>
+
+              <template #cell-status="{ item }">
+                <ClimbeBadge v-if="item.status === 'active'" variant="primary">Vigente</ClimbeBadge>
+                <ClimbeBadge v-else-if="item.status === 'approved'" variant="success"
+                  >Aprovado</ClimbeBadge
+                >
+                <ClimbeBadge v-else-if="item.status === 'pending'" variant="warning"
+                  >Em Análise</ClimbeBadge
+                >
+                <ClimbeBadge v-else variant="danger">Cancelado</ClimbeBadge>
+              </template>
+
+              <template #cell-actions="{ item }">
+                <div class="flex gap-2">
+                  <ClimbeButton
+                    variant="ghost"
+                    class="!px-3 !py-1 !text-[0.8rem]"
+                    @click="alert(`Detalhes do contrato #${item.id}`)"
+                    >Ver</ClimbeButton
+                  >
+                </div>
+              </template>
+            </ClimbeTable>
+          </ClimbeCard>
+        </div>
+        <div class="lg:col-span-1 flex flex-col gap-4">
+          <WidgetAgendaSemana />
+        </div>
       </div>
     </div>
 
