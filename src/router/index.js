@@ -101,6 +101,24 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: '/reunioes',
+      name: 'reunioes',
+      component: () => import('@/views/ReuniaoFormView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/reunioes/nova',
+      name: 'reuniao-nova',
+      component: () => import('@/views/ReuniaoFormView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/reunioes/:id/editar',
+      name: 'reuniao-editar',
+      component: () => import('@/views/ReuniaoFormView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/agenda',
       name: 'agenda',
       component: () => import('../views/AgendaView.vue'),
