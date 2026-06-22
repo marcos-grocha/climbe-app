@@ -1,38 +1,18 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import ClimbePageWrapper from '@/components/layout/ClimbePageWrapper.vue'
+import { listarContratos } from '@/services/contratosService.js'
 
 const router = useRouter()
-
-const contratos = ref([
-  {
-    id: 1,
-    empresa: 'XP Investimentos',
-    proposta: 'Proposta #2024-001',
-    prazo: '31/12/2025',
-    status: 'Ativo',
-  },
-  {
-    id: 2,
-    empresa: 'BTG Pactual',
-    proposta: 'Proposta #2024-002',
-    prazo: '30/06/2025',
-    status: 'Pendente',
-  },
-  {
-    id: 3,
-    empresa: 'Itaú BBA',
-    proposta: 'Proposta #2024-003',
-    prazo: '15/03/2025',
-    status: 'Encerrado',
-  },
-])
+const contratos = ref([])
+const carregando = ref(false)
+const erro = ref(null)
 
 const statusClass = (status) => {
-  if (status === 'Ativo')
+  if (status === 'ativo')
     return 'text-green-400 bg-green-400/10 px-2 py-0.5 rounded-full text-xs font-semibold'
-  if (status === 'Pendente')
+  if (status === 'pendente')
     return 'text-yellow-400 bg-yellow-400/10 px-2 py-0.5 rounded-full text-xs font-semibold'
   return 'text-red-400 bg-red-400/10 px-2 py-0.5 rounded-full text-xs font-semibold'
 }
@@ -40,6 +20,20 @@ const statusClass = (status) => {
 const verDetalhe = (id) => {
   router.push(`/contratos/${id}`)
 }
+
+const carregarContratos = async () => {
+  carregando.value = true
+  erro.value = null
+  try {
+    contratos.value = await listarContratos()
+  } catch {
+    erro.value = 'Erro ao carregar contratos.'
+  } finally {
+    carregando.value = false
+  }
+}
+
+onMounted(carregarContratos)
 </script>
 
 <template>
@@ -56,7 +50,12 @@ const verDetalhe = (id) => {
     <div
       class="bg-climbe-neutral-card border border-climbe-neutral-border rounded-md overflow-hidden"
     >
-      <table class="w-full text-sm">
+      <div v-if="carregando" class="text-center text-climbe-text-muted py-12">Carregando...</div>
+      <div v-else-if="erro" class="text-center text-red-400 py-12">{{ erro }}</div>
+      <div v-else-if="contratos.length === 0" class="text-center text-climbe-text-muted py-12">
+        Nenhum contrato encontrado.
+      </div>
+      <table v-else class="w-full text-sm">
         <thead>
           <tr class="border-b border-climbe-neutral-border bg-climbe-neutral-mute">
             <th class="text-left px-4 py-3 text-climbe-text-muted font-heavy uppercase text-xs">
@@ -83,9 +82,11 @@ const verDetalhe = (id) => {
             class="border-b border-climbe-neutral-border hover:bg-climbe-primary-light transition-colors cursor-pointer"
             @click="verDetalhe(contrato.id)"
           >
-            <td class="px-4 py-3 text-climbe-text-main font-heavy">{{ contrato.empresa }}</td>
-            <td class="px-4 py-3 text-climbe-text-muted">{{ contrato.proposta }}</td>
-            <td class="px-4 py-3 text-climbe-text-muted">{{ contrato.prazo }}</td>
+            <td class="px-4 py-3 text-climbe-text-main font-heavy">
+              {{ contrato.empresa?.nome || '—' }}
+            </td>
+            <td class="px-4 py-3 text-climbe-text-muted">{{ contrato.proposta?.titulo || '—' }}</td>
+            <td class="px-4 py-3 text-climbe-text-muted">{{ contrato.prazo_vigencia || '—' }}</td>
             <td class="px-4 py-3">
               <span :class="statusClass(contrato.status)">{{ contrato.status }}</span>
             </td>
