@@ -95,21 +95,27 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
-      path: '/contratos',
-      name: 'contratos',
-      component: () => import('../views/contratos/ContratosListView.vue'),
-      meta: { requiresAuth: true },
-    },
-    {
-      path: '/contratos/:id',
-      name: 'contrato-detalhe',
-      component: () => import('../views/contratos/ContratoDetailView.vue'),
-      meta: { requiresAuth: true },
-    },
-    {
       path: '/documentos',
       name: 'documentos',
       component: () => import('../views/DocumentosView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/reunioes',
+      name: 'reunioes',
+      component: () => import('@/views/ReuniaoFormView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/reunioes/nova',
+      name: 'reuniao-nova',
+      component: () => import('@/views/ReuniaoFormView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/reunioes/:id/editar',
+      name: 'reuniao-editar',
+      component: () => import('@/views/ReuniaoFormView.vue'),
       meta: { requiresAuth: true },
     },
     {
