@@ -10,6 +10,7 @@ const modalAberto = ref(false)
 const eventoSelecionado = ref(null)
 const novoEvento = ref({ titulo: '', data: '', tipo: 'reuniao' })
 const mostrarFormulario = ref(false)
+const calendarRef = ref(null)
 
 const eventos = ref([
   {
@@ -106,6 +107,12 @@ const adicionarEvento = () => {
         <span class="flex items-center gap-1 text-xs text-climbe-text-muted">
           <span class="w-3 h-3 rounded-full bg-[#f59e0b] inline-block"></span> Vencimento
         </span>
+        <button
+          class="bg-climbe-primary text-[#121312] font-heavy px-4 py-2 rounded-sm text-sm hover:bg-climbe-primary-hover transition-colors"
+          @click="mostrarFormulario = true"
+        >
+          + Agendar
+        </button>
       </div>
     </div>
 
@@ -137,6 +144,8 @@ const adicionarEvento = () => {
             </label>
           </div>
         </div>
+      <div class="w-64 shrink-0">
+        <MiniCalendario />
       </div>
 
       <!-- Calendário principal -->
@@ -144,6 +153,7 @@ const adicionarEvento = () => {
         class="flex-1 bg-climbe-neutral-card border border-climbe-neutral-border rounded-2xl p-6 google-calendar"
       >
         <FullCalendar :options="calendarOptions" />
+        <FullCalendar ref="calendarRef" :options="calendarOptions" />
       </div>
     </div>
 
