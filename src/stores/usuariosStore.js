@@ -1,25 +1,35 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { usuariosMock } from '@/mocks/usuariosMock'
+import * as usuariosService from '@/services/usuariosService'
 
 export const useUsuariosStore = defineStore('usuarios', () => {
-  const usuarios = ref([...usuariosMock])
+  const usuarios = ref([])
+  const cargos = ref([])
   const carregando = ref(false)
   const erro = ref(null)
 
-  const totalAdmins = computed(() => usuarios.value.filter((u) => u.perfil === 'admin').length)
-  const totalUsuarios = computed(() => usuarios.value.filter((u) => u.perfil === 'usuario').length)
-  const totalAtivos = computed(() => usuarios.value.filter((u) => u.status === 'ativo').length)
+  const totalAdmins = computed(() => usuarios.value.filter((u) => u.papel === 'admin').length)
+  const totalAnalistas = computed(() => usuarios.value.filter((u) => u.papel === 'analista').length)
+  const totalAtivos = computed(() => usuarios.value.filter((u) => u.situacao === 'ativo').length)
 
-  async function carregarUsuarios() {
+  // Retorna o nome do cargo por ID, útil para a DataTable
+  function getNomeCargo(idCargo) {
+    const cargo = cargos.value.find((c) => c.id_cargo === idCargo)
+    return cargo ? cargo.nome_cargo : 'Desconhecido'
+  }
+
+  async function carregarDados() {
     carregando.value = true
     erro.value = null
     try {
-      // Mock: simula delay de rede
-      await new Promise((resolve) => setTimeout(resolve, 400))
-      usuarios.value = [...usuariosMock]
+      const [usuariosData, cargosData] = await Promise.all([
+        usuariosService.listarUsuarios(),
+        usuariosService.listarCargos(),
+      ])
+      usuarios.value = usuariosData
+      cargos.value = cargosData
     } catch (err) {
-      erro.value = err?.message || 'Erro ao carregar usuários.'
+      erro.value = err?.message || 'Erro ao carregar os dados.'
       throw err
     } finally {
       carregando.value = false
@@ -28,21 +38,13 @@ export const useUsuariosStore = defineStore('usuarios', () => {
 
   async function criarUsuario(payload) {
     carregando.value = true
+    erro.value = null
     try {
-      await new Promise((resolve) => setTimeout(resolve, 300))
-      const novoId = Math.max(...usuarios.value.map((u) => u.id)) + 1
-      const avatar = payload.nome_completo
-        .split(' ')
-        .slice(0, 2)
-        .map((n) => n[0].toUpperCase())
-        .join('')
-      usuarios.value.push({
-        id: novoId,
-        ...payload,
-        avatar,
-        ultimo_acesso: '—',
-        status: 'ativo',
-      })
+      const novoUsuario = await usuariosService.criarUsuario(payload)
+      usuarios.value.push(novoUsuario)
+    } catch (err) {
+      erro.value = err?.message || 'Erro ao criar usuário.'
+      throw err
     } finally {
       carregando.value = false
     }
@@ -50,12 +52,50 @@ export const useUsuariosStore = defineStore('usuarios', () => {
 
   async function atualizarUsuario(id, payload) {
     carregando.value = true
+    erro.value = null
     try {
-      await new Promise((resolve) => setTimeout(resolve, 300))
+      const usuarioAtualizado = await usuariosService.atualizarUsuario(id, payload)
       const idx = usuarios.value.findIndex((u) => u.id === id)
       if (idx !== -1) {
-        usuarios.value[idx] = { ...usuarios.value[idx], ...payload }
+        usuarios.value[idx] = { ...usuarios.value[idx], ...usuarioAtualizado }
       }
+    } catch (err) {
+      erro.value = err?.message || 'Erro ao atualizar usuário.'
+      throw err
+    } finally {
+      carregando.value = false
+    }
+  }
+
+  async function inativarUsuario(id) {
+    carregando.value = true
+    erro.value = null
+    try {
+      await usuariosService.inativarUsuario(id)
+      const idx = usuarios.value.findIndex((u) => u.id === id)
+      if (idx !== -1) {
+        usuarios.value[idx].situacao = 'inativo'
+      }
+    } catch (err) {
+      erro.value = err?.message || 'Erro ao inativar usuário.'
+      throw err
+    } finally {
+      carregando.value = false
+    }
+  }
+
+  async function reativarUsuario(id) {
+    carregando.value = true
+    erro.value = null
+    try {
+      const usuarioReativado = await usuariosService.reativarUsuario(id)
+      const idx = usuarios.value.findIndex((u) => u.id === id)
+      if (idx !== -1) {
+        usuarios.value[idx] = { ...usuarios.value[idx], ...usuarioReativado }
+      }
+    } catch (err) {
+      erro.value = err?.message || 'Erro ao reativar usuário.'
+      throw err
     } finally {
       carregando.value = false
     }
@@ -64,32 +104,28 @@ export const useUsuariosStore = defineStore('usuarios', () => {
   async function toggleStatus(id) {
     const usuario = usuarios.value.find((u) => u.id === id)
     if (!usuario) return
-    await atualizarUsuario(id, {
-      status: usuario.status === 'ativo' ? 'inativo' : 'ativo',
-    })
-  }
 
-  async function excluirUsuario(id) {
-    carregando.value = true
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 300))
-      usuarios.value = usuarios.value.filter((u) => u.id !== id)
-    } finally {
-      carregando.value = false
+    if (usuario.situacao === 'ativo') {
+      await inativarUsuario(id)
+    } else {
+      await reativarUsuario(id)
     }
   }
 
   return {
     usuarios,
+    cargos,
     carregando,
     erro,
     totalAdmins,
-    totalUsuarios,
+    totalAnalistas,
     totalAtivos,
-    carregarUsuarios,
+    getNomeCargo,
+    carregarDados,
     criarUsuario,
     atualizarUsuario,
+    inativarUsuario,
+    reativarUsuario,
     toggleStatus,
-    excluirUsuario,
   }
 })

@@ -9,22 +9,29 @@ defineProps({
 const emit = defineEmits(['toggle', 'navigate'])
 const router = useRouter()
 
-const menuItems = [
-  { id: 'dashboard', label: 'Painel Geral', icon: '📊', path: '/' },
-  { id: 'contracts', label: 'Gestao de Contratos', icon: '📄', path: '/' },
-  { id: 'propostas', label: 'Propostas', icon: '🧾', path: '/propostas' },
-  { id: 'empresas', label: 'Empresas & Clientes', icon: '🏢', path: '/empresas' },
-      feature/formulario-de-agendamento
-  { id: 'users', label: 'Gestao de Usuarios', icon: '👥' },
-  { id: 'meetings', label: 'Reunioes & Atas', icon: '🗓', path: '/reunioes' },
-  { id: 'documents', label: 'Documentos', icon: '📁' },
-  { id: 'users', label: 'Gestao de Usuarios', icon: '👥', path: '/usuarios' },
-  { id: 'meetings', label: 'Reunioes & Atas', icon: '🗓' },
-  { id: 'documents', label: 'Documentos', icon: '📁', path: '/documentos' },
-      main
-  { id: 'reports', label: 'Relatorios', icon: '📈' },
-  { id: 'settings', label: 'Configuracoes', icon: '⚙️' },
-]
+import { computed } from 'vue'
+import { useAuthStore } from '@/stores/auth'
+
+const authStore = useAuthStore()
+
+const menuItems = computed(() => {
+  const items = [
+    { id: 'dashboard', label: 'Painel Geral', icon: '📊', path: '/' },
+    { id: 'contracts', label: 'Gestão de Contratos', icon: '📄', path: '/contratos' },
+    { id: 'propostas', label: 'Propostas', icon: '🧾', path: '/propostas' },
+    { id: 'empresas', label: 'Empresas & Clientes', icon: '🏢', path: '/empresas' },
+    { id: 'meetings', label: 'Reuniões & Atas', icon: '🗓', path: '/reunioes' },
+    { id: 'documents', label: 'Documentos', icon: '📁', path: '/documentos' },
+    { id: 'users', label: 'Gestão de Usuários', icon: '👥', path: '/usuarios' },
+    { id: 'reports', label: 'Relatórios', icon: '📈' },
+    { id: 'settings', label: 'Configurações', icon: '⚙️' },
+  ]
+  
+  if (authStore.user?.papel !== 'admin') {
+    return items.filter(item => item.id !== 'users')
+  }
+  return items
+})
 
 const handleNavigate = (item) => {
   if (item.path) {
