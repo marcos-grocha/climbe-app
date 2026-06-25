@@ -144,8 +144,6 @@ const adicionarEvento = () => {
             </label>
           </div>
         </div>
-      <div class="w-64 shrink-0">
-        <MiniCalendario />
       </div>
 
       <!-- Calendário principal -->

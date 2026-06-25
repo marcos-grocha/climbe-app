@@ -11,19 +11,14 @@ const router = useRouter()
 
 const menuItems = [
   { id: 'dashboard', label: 'Painel Geral', icon: '📊', path: '/' },
-  { id: 'contracts', label: 'Gestao de Contratos', icon: '📄', path: '/' },
+  { id: 'contracts', label: 'Gestão de Contratos', icon: '📄', path: '/' },
   { id: 'propostas', label: 'Propostas', icon: '🧾', path: '/propostas' },
   { id: 'empresas', label: 'Empresas & Clientes', icon: '🏢', path: '/empresas' },
-      feature/formulario-de-agendamento
-  { id: 'users', label: 'Gestao de Usuarios', icon: '👥' },
-  { id: 'meetings', label: 'Reunioes & Atas', icon: '🗓', path: '/reunioes' },
-  { id: 'documents', label: 'Documentos', icon: '📁' },
-  { id: 'users', label: 'Gestao de Usuarios', icon: '👥', path: '/usuarios' },
-  { id: 'meetings', label: 'Reunioes & Atas', icon: '🗓' },
+  { id: 'users', label: 'Gestão de Usuários', icon: '👥', path: '/usuarios' },
+  { id: 'meetings', label: 'Reuniões & Atas', icon: '🗓', path: '/reunioes' },
   { id: 'documents', label: 'Documentos', icon: '📁', path: '/documentos' },
-      main
-  { id: 'reports', label: 'Relatorios', icon: '📈' },
-  { id: 'settings', label: 'Configuracoes', icon: '⚙️' },
+  { id: 'reports', label: 'Relatórios', icon: '📈', path: '/relatorios' },
+  { id: 'settings', label: 'Configurações', icon: '⚙️', path: '/configuracoes' },
 ]
 
 const handleNavigate = (item) => {

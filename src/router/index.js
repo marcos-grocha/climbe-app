@@ -30,7 +30,6 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
-     feature/menu
       path: '/empresas/nova',
       name: 'empresa-nova',
       component: () => import('@/views/EmpresaFormView.vue'),
@@ -43,7 +42,6 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
-        main
       path: '/contratos',
       name: 'contratos',
       component: () => import('../views/contratos/ContratosListView.vue'),
@@ -71,15 +69,6 @@ const router = createRouter({
       path: '/propostas/:id/editar',
       name: 'proposta-editar',
       component: () => import('@/views/PropostaFormView.vue'),
-      path: '/contratos',
-      name: 'contratos',
-      component: () => import('../views/contratos/ContratosListView.vue'),
-      meta: { requiresAuth: true },
-    },
-    {
-      path: '/contratos/:id',
-      name: 'contrato-detalhe',
-      component: () => import('../views/contratos/ContratoDetailView.vue'),
       meta: { requiresAuth: true },
     },
     {
@@ -92,12 +81,6 @@ const router = createRouter({
       path: '/documentos/validar',
       name: 'documentos-validar',
       component: () => import('../views/DocumentosValidarView.vue'),
-      meta: { requiresAuth: true },
-    },
-    {
-      path: '/documentos',
-      name: 'documentos',
-      component: () => import('../views/DocumentosView.vue'),
       meta: { requiresAuth: true },
     },
     {
@@ -122,9 +105,24 @@ const router = createRouter({
       path: '/agenda',
       name: 'agenda',
       component: () => import('../views/AgendaView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/usuarios',
       name: 'usuarios',
       component: () => import('@/views/UsuariosListView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/configuracoes',
+      name: 'configuracoes',
+      component: () => import('@/views/ConfiguracoesView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/relatorios',
+      name: 'relatorios',
+      component: () => import('@/views/RelatoriosView.vue'),
       meta: { requiresAuth: true },
     },
   ],
