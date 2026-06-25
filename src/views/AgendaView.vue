@@ -150,7 +150,6 @@ const adicionarEvento = () => {
       <div
         class="flex-1 bg-climbe-neutral-card border border-climbe-neutral-border rounded-2xl p-6 google-calendar"
       >
-        <FullCalendar :options="calendarOptions" />
         <FullCalendar ref="calendarRef" :options="calendarOptions" />
       </div>
     </div>

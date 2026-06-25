@@ -14,6 +14,7 @@ export const useAuthStore = defineStore('auth', () => {
     loading.value = true
     error.value = null
     try {
+       feature/ajustes
         // // feature/formulario-de-agendamento
       // MOCK: Para contornar a falta do backend rodando na porta 8000
       // simulamos um login bem-sucedido
@@ -23,6 +24,7 @@ export const useAuthStore = defineStore('auth', () => {
       
       // Se houvesse backend:
       /*
+        main
       const params = new URLSearchParams()
       params.append('username', email)
       params.append('password', senha)
@@ -37,12 +39,15 @@ export const useAuthStore = defineStore('auth', () => {
       localStorage.setItem('token', data.access_token)
 
       await fetchMe()
+        feature/ajustes
       */       
       // MOCK: login sem backend
       token.value = 'mock-jwt-token'
       localStorage.setItem('token', 'mock-jwt-token')
       user.value = { nome_completo: 'Admin Climbe', email: email, perfil: 'admin' }
       // main
+
+         main
     } catch (err) {
       error.value = err
       throw err
@@ -52,6 +57,7 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   async function fetchMe() {
+      feature/ajustes
     // feature/formulario-de-agendamento
     // MOCK: Retorna usuário fake instantaneamente sem chamar o backend
     // para evitar que o Axios dispare erros 401 ou de rede
@@ -65,6 +71,10 @@ export const useAuthStore = defineStore('auth', () => {
  
     // MOCK: retorna usuário fake sem chamar o backend
     user.value = { nome_completo: 'Admin Climbe', email: 'admin@climbe.com', perfil: 'admin' }
+
+    const { data } = await http.get('/auth/me')
+    user.value = data
+      main
   }
 
   async function restoreSession() {

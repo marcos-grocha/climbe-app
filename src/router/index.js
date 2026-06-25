@@ -69,6 +69,22 @@ const router = createRouter({
       path: '/propostas/:id/editar',
       name: 'proposta-editar',
       component: () => import('@/views/PropostaFormView.vue'),
+      
+    feature/ajustes
+
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/contratos',
+      name: 'contratos',
+      component: () => import('../views/contratos/ContratosListView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/contratos/:id',
+      name: 'contrato-detalhe',
+      component: () => import('../views/contratos/ContratoDetailView.vue'),
+      main
       meta: { requiresAuth: true },
     },
     {
@@ -111,7 +127,19 @@ const router = createRouter({
       path: '/usuarios',
       name: 'usuarios',
       component: () => import('@/views/UsuariosListView.vue'),
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true, requiresAdmin: true },
+    },
+    {
+      path: '/usuarios/novo',
+      name: 'usuario-novo',
+      component: () => import('@/views/UsuarioFormView.vue'),
+      meta: { requiresAuth: true, requiresAdmin: true },
+    },
+    {
+      path: '/usuarios/:id/editar',
+      name: 'usuario-editar',
+      component: () => import('@/views/UsuarioFormView.vue'),
+      meta: { requiresAuth: true, requiresAdmin: true },
     },
     {
       path: '/configuracoes',
@@ -135,6 +163,7 @@ router.beforeEach(async (to, from, next) => {
   const hasToken = !!localStorage.getItem('token')
   const requiresAuth = to.meta.requiresAuth
   const guestOnly = to.meta.guestOnly
+  const requiresAdmin = to.meta.requiresAdmin
 
   if (requiresAuth) {
     if (!hasToken) {
@@ -146,6 +175,10 @@ router.beforeEach(async (to, from, next) => {
           next({ name: 'login' })
           return
         }
+      }
+      if (requiresAdmin && authStore.user?.papel !== 'admin') {
+        next({ name: 'home' })
+        return
       }
       next()
     }
