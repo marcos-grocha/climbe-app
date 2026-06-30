@@ -26,7 +26,9 @@ const handleNavigate = (item) => {
     router.push(item.path)
   }
 
-  emit('navigate', item.id)
+  if (item.id === 'dashboard' || item.id === 'contracts') {
+    emit('navigate', item.id)
+  }
 }
 </script>
 

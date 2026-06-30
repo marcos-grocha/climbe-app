@@ -1,11 +1,16 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import ClimbePageWrapper from '@/components/layout/ClimbePageWrapper.vue'
-import { listarDocumentos, enviarDocumento, excluirDocumento } from '@/services/documentosService'
+import { useDocumentosStore } from '@/stores/documentosStore'
 
-const documentos = ref([])
+const documentosStore = useDocumentosStore()
+const router = useRouter()
+
 const carregando = ref(false)
 const mostrarModal = ref(false)
+const mensagemSucesso = ref('')
+const mensagemErro = ref('')
 
 const novoDocumento = ref({
   nome: '',
@@ -28,29 +33,58 @@ const formatarData = (data) => {
   return new Date(data).toLocaleDateString('pt-BR')
 }
 
+const pendentesCount = computed(() => {
+  return documentosStore.documentos.filter(d => d.status === 'pendente').length
+})
+
+const irParaValidacao = () => {
+  router.push('/documentos/validar')
+}
+
 const carregarDocumentos = async () => {
   carregando.value = true
-  documentos.value = await listarDocumentos()
-  carregando.value = false
+  mensagemErro.value = ''
+  try {
+    await documentosStore.carregarDocumentos()
+  } catch (err) {
+    mensagemErro.value = err.message || 'Erro ao carregar documentos'
+  } finally {
+    carregando.value = false
+  }
 }
 
 const salvarDocumento = async () => {
-  await enviarDocumento(novoDocumento.value)
-  mostrarModal.value = false
-  novoDocumento.value = {
-    nome: '',
-    tipo: 'PDF',
-    tamanho: '',
-    contrato: '',
-    empresa: '',
-    enviado_por: 'admin@climbe.com',
+  mensagemSucesso.value = ''
+  mensagemErro.value = ''
+  try {
+    await documentosStore.enviarDocumento(novoDocumento.value)
+    mensagemSucesso.value = 'Documento enviado com sucesso.'
+    mostrarModal.value = false
+    novoDocumento.value = {
+      nome: '',
+      tipo: 'PDF',
+      tamanho: '',
+      contrato: '',
+      empresa: '',
+      enviado_por: 'admin@climbe.com',
+    }
+  } catch (err) {
+    mensagemErro.value = err.message || 'Erro ao enviar documento'
   }
-  await carregarDocumentos()
 }
 
-const removerDocumento = async (id) => {
-  await excluirDocumento(id)
-  await carregarDocumentos()
+const removerDocumento = async (doc) => {
+  const confirm = window.confirm(`Tem certeza que deseja excluir o documento ${doc.nome}?`)
+  if (!confirm) return
+  
+  mensagemSucesso.value = ''
+  mensagemErro.value = ''
+  try {
+    await documentosStore.excluirDocumento(doc.id)
+    mensagemSucesso.value = 'Documento excluído com sucesso.'
+  } catch (err) {
+    mensagemErro.value = err.message || 'Erro ao excluir documento'
+  }
 }
 
 onMounted(carregarDocumentos)
@@ -61,12 +95,35 @@ onMounted(carregarDocumentos)
     <!-- Cabeçalho -->
     <div class="flex justify-between items-center mb-6">
       <h3 class="text-climbe-text-main font-black text-xl m-0">Documentos</h3>
-      <button
-        class="bg-climbe-primary text-[#121312] font-heavy px-4 py-2 rounded-sm text-sm hover:bg-climbe-primary-hover transition-colors"
-        @click="mostrarModal = true"
-      >
-        + Enviar Documento
-      </button>
+      <div class="flex gap-3">
+        <button
+          v-if="pendentesCount > 0"
+          class="border border-yellow-400 text-yellow-400 font-heavy px-4 py-2 rounded-sm text-sm hover:bg-yellow-400/10 transition-colors"
+          @click="irParaValidacao"
+        >
+          Validar pendentes ({{ pendentesCount }})
+        </button>
+        <button
+          class="bg-climbe-primary text-[#121312] font-heavy px-4 py-2 rounded-sm text-sm hover:bg-climbe-primary-hover transition-colors"
+          @click="mostrarModal = true"
+        >
+          + Enviar Documento
+        </button>
+      </div>
+    </div>
+
+    <!-- Mensagens de Feedback -->
+    <div
+      v-if="mensagemErro"
+      class="rounded-sm border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200 mb-6"
+    >
+      {{ mensagemErro }}
+    </div>
+    <div
+      v-if="mensagemSucesso"
+      class="rounded-sm border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-200 mb-6"
+    >
+      {{ mensagemSucesso }}
     </div>
 
     <!-- Tabela -->
@@ -101,8 +158,14 @@ onMounted(carregarDocumentos)
           </tr>
         </thead>
         <tbody>
+          <tr v-if="documentosStore.documentos.length === 0">
+            <td colspan="7" class="text-center text-climbe-text-muted py-6">
+              Nenhum documento encontrado.
+            </td>
+          </tr>
           <tr
-            v-for="doc in documentos"
+            v-else
+            v-for="doc in documentosStore.documentos"
             :key="doc.id"
             class="border-b border-climbe-neutral-border hover:bg-climbe-primary-light transition-colors"
           >
@@ -119,10 +182,18 @@ onMounted(carregarDocumentos)
             <td class="px-4 py-3">
               <span :class="statusClass(doc.status)">{{ doc.status }}</span>
             </td>
-            <td class="px-4 py-3">
+            <td class="px-4 py-3 flex gap-3">
               <button
-                class="text-red-400 text-xs hover:underline"
-                @click="removerDocumento(doc.id)"
+                v-if="doc.status === 'pendente'"
+                class="text-yellow-400 text-xs hover:underline font-heavy"
+                @click="irParaValidacao"
+              >
+                Validar
+              </button>
+              <button
+                v-if="doc.status !== 'aprovado'"
+                class="text-red-400 text-xs hover:underline font-heavy"
+                @click="removerDocumento(doc)"
               >
                 Excluir
               </button>

@@ -1,41 +1,61 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import ClimbePageWrapper from '@/components/layout/ClimbePageWrapper.vue'
-import { listarDocumentos } from '@/services/documentosService'
+import { useDocumentosStore } from '@/stores/documentosStore'
 
-const documentos = ref([])
+const documentosStore = useDocumentosStore()
+
 const carregando = ref(false)
 const modalAberto = ref(false)
 const documentoSelecionado = ref(null)
 const acao = ref('')
 const motivo = ref('')
+const mensagemErro = ref('')
+const mensagemSucesso = ref('')
 
 const documentosPendentes = computed(() =>
-  documentos.value.filter((doc) => doc.status === 'pendente'),
+  documentosStore.documentos.filter((doc) => doc.status === 'pendente'),
 )
 
 const carregarDocumentos = async () => {
   carregando.value = true
-  documentos.value = await listarDocumentos()
-  carregando.value = false
+  mensagemErro.value = ''
+  try {
+    await documentosStore.carregarDocumentos()
+  } catch (err) {
+    mensagemErro.value = err.message || 'Erro ao carregar documentos pendentes.'
+  } finally {
+    carregando.value = false
+  }
 }
 
 const abrirModal = (doc, acaoTipo) => {
   documentoSelecionado.value = doc
   acao.value = acaoTipo
   motivo.value = ''
+  mensagemErro.value = ''
   modalAberto.value = true
 }
 
-const confirmarAcao = () => {
-  const indice = documentos.value.findIndex((d) => d.id === documentoSelecionado.value.id)
-  if (indice !== -1) {
-    documentos.value[indice].status = acao.value === 'aprovar' ? 'aprovado' : 'rejeitado'
-    documentos.value[indice].motivo = motivo.value
+const confirmarAcao = async () => {
+  mensagemErro.value = ''
+  mensagemSucesso.value = ''
+  
+  try {
+    if (acao.value === 'aprovar') {
+      await documentosStore.aprovarDocumento(documentoSelecionado.value.id, motivo.value)
+      mensagemSucesso.value = 'Documento aprovado com sucesso!'
+    } else {
+      await documentosStore.rejeitarDocumento(documentoSelecionado.value.id, motivo.value)
+      mensagemSucesso.value = 'Documento rejeitado com sucesso!'
+    }
+    
+    modalAberto.value = false
+    documentoSelecionado.value = null
+    motivo.value = ''
+  } catch (err) {
+    mensagemErro.value = err.message || 'Ocorreu um erro ao processar a validação.'
   }
-  modalAberto.value = false
-  documentoSelecionado.value = null
-  motivo.value = ''
 }
 
 onMounted(carregarDocumentos)
@@ -53,6 +73,19 @@ onMounted(carregarDocumentos)
       <span class="bg-yellow-400/10 text-yellow-400 text-xs font-heavy px-3 py-1 rounded-full">
         {{ documentosPendentes.length }} pendente(s)
       </span>
+    </div>
+
+    <div
+      v-if="mensagemErro"
+      class="rounded-sm border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200 mb-6"
+    >
+      {{ mensagemErro }}
+    </div>
+    <div
+      v-if="mensagemSucesso"
+      class="rounded-sm border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-200 mb-6"
+    >
+      {{ mensagemSucesso }}
     </div>
 
     <!-- Lista de pendentes -->
