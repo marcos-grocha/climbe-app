@@ -69,22 +69,6 @@ const router = createRouter({
       path: '/propostas/:id/editar',
       name: 'proposta-editar',
       component: () => import('@/views/PropostaFormView.vue'),
-      
-    feature/ajustes
-
-      meta: { requiresAuth: true },
-    },
-    {
-      path: '/contratos',
-      name: 'contratos',
-      component: () => import('../views/contratos/ContratosListView.vue'),
-      meta: { requiresAuth: true },
-    },
-    {
-      path: '/contratos/:id',
-      name: 'contrato-detalhe',
-      component: () => import('../views/contratos/ContratoDetailView.vue'),
-      main
       meta: { requiresAuth: true },
     },
     {
@@ -102,7 +86,7 @@ const router = createRouter({
     {
       path: '/reunioes',
       name: 'reunioes',
-      component: () => import('@/views/ReuniaoFormView.vue'),
+      component: () => import('@/views/ReunioesListView.vue'),
       meta: { requiresAuth: true },
     },
     {

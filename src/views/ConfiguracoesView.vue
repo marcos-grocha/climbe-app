@@ -5,7 +5,6 @@ import ClimbePageWrapper from '@/components/layout/ClimbePageWrapper.vue'
 import ClimbeCard from '@/components/ui/ClimbeCard.vue'
 import ClimbeButton from '@/components/ui/ClimbeButton.vue'
 import ClimbeInput from '@/components/ui/ClimbeInput.vue'
-import ClimbeBadge from '@/components/ui/ClimbeBadge.vue'
 import { useAuthStore } from '@/stores/auth'
 import { obterConfiguracoes, salvarConfiguracoes, alterarSenha } from '@/services/configuracoesService'
 
@@ -406,7 +405,7 @@ async function atualizarSenha() {
               <form @submit.prevent="salvarPreferencias" class="flex flex-col gap-5">
                 
                 <!-- Aparência do Tema -->
-                <div class="flex flex-col gap-2 pb-4 border-b border-white/5">
+                <div class="flex flex-col gap-2 pb-4 border-b border-white/5" style="display: none !important;">
                   <span class="text-sm font-heavy text-[#b7d4de]">Aparência / Tema</span>
                   <div class="flex gap-4 mt-2">
                     <label class="theme-option" :class="{ 'theme-option--selected': formPreferencias.tema === 'dark' }">
@@ -459,7 +458,7 @@ async function atualizarSenha() {
                     </label>
                   </div>
 
-                  <div class="flex justify-between items-center py-2 border-b border-white/5">
+                  <div class="flex justify-between items-center py-2 border-b border-white/5" style="display: none !important;">
                     <div>
                       <h4 class="text-[0.9rem] font-bold text-white m-0">Relatórios Semanais Consolidados</h4>
                       <p class="text-xs text-climbe-text-muted mt-0.5">Receber por e-mail o resumo financeiro das empresas.</p>

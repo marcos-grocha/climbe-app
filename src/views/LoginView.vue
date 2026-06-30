@@ -594,3 +594,12 @@ const handleLogin = async () => {
     </div>
   </div>
 </template>
+
+<style scoped>
+button[aria-label="Entrar com Google"],
+button[aria-label="Entrar com Apple"],
+form > .grid.grid-cols-2.gap-4,
+button[aria-label="Alternar tema"] {
+  display: none !important;
+}
+</style>

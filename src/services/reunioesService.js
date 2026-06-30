@@ -51,6 +51,15 @@ export async function atualizarReuniao(id, payload) {
   return clonarObjeto(reunioesEmMemoria[indice])
 }
 
+export async function excluirReuniao(id) {
+  await aguardar(DELAY_MS)
+  const indice = reunioesEmMemoria.findIndex((item) => item.id === Number(id))
+  if (indice === -1) {
+    throw new Error('Reunião não encontrada para exclusão.')
+  }
+  reunioesEmMemoria.splice(indice, 1)
+}
+
 export async function listarSalas() {
   await aguardar(DELAY_MS)
   return clonarObjeto(salasMock)

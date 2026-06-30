@@ -207,3 +207,9 @@ const handleLogout = () => {
     </div>
   </header>
 </template>
+
+<style scoped>
+button[title="Alternar tema"] {
+  display: none !important;
+}
+</style>

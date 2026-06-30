@@ -7,6 +7,7 @@ import {
   listarSalas as listarSalasService,
   listarParticipantes as listarParticipantesService,
   verificarDisponibilidadeSala as verificarDisponibilidadeService,
+  excluirReuniao as excluirReuniaoService,
 } from '@/services/reunioesService'
 
 export const useReunioesStore = defineStore('reunioes', {
@@ -41,6 +42,10 @@ export const useReunioesStore = defineStore('reunioes', {
         reuniao.id === Number(id) ? reuniaoAtualizada : reuniao,
       )
       return reuniaoAtualizada
+    },
+    async excluirReuniao(id) {
+      await excluirReuniaoService(id)
+      this.reunioes = this.reunioes.filter((reuniao) => reuniao.id !== Number(id))
     },
     async carregarSalas() {
       const dados = await listarSalasService()

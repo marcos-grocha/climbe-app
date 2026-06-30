@@ -191,7 +191,6 @@ const donutSlices = computed(() => {
   return setores.map(s => {
     const porcentagemAjustada = (s.porcentagem / somaPorcentagens) * 100
     const strokeLength = (porcentagemAjustada / 100) * donutCircumference
-    const offset = donutCircumference - (acumulado / 100) * donutCircumference
     
     const slice = {
       ...s,
@@ -275,6 +274,7 @@ async function fazerDownload(rep) {
           variant="primary"
           class="!h-12 !rounded-md !px-6 !font-bold"
           @click="abrirExportador"
+          style="display: none !important;"
         >
           📈 Exportar Novo Relatório
         </ClimbeButton>
